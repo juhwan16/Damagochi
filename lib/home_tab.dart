@@ -207,7 +207,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 10, 14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.75),
+        color: const Color(0xFFFFFBF4).withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
@@ -486,7 +486,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.88),
+        color: const Color(0xFFFFFBF4).withValues(alpha: 0.93),
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
@@ -557,7 +557,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.88),
+        color: const Color(0xFFFFFBF4).withValues(alpha: 0.93),
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(

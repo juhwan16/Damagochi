@@ -134,7 +134,7 @@ class _RankingTabState extends State<RankingTab> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.85),
+        color: const Color(0xFFFFFBF4).withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -294,7 +294,7 @@ class _RankingTabState extends State<RankingTab> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.85),
+        color: const Color(0xFFFFFBF4).withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(

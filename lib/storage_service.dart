@@ -11,30 +11,75 @@ typedef CareResult = ({
 });
 
 class StorageService {
-  // Pet stats
-  static const _goalKey = 'goal_minutes';
-  static const _levelKey = 'pet_level';
-  static const _xpKey = 'pet_xp';
-  static const _lastDateKey = 'last_reward_date';
-  static const _hungerKey = 'pet_hunger';
-  static const _happinessKey = 'pet_happiness';
-  static const _energyKey = 'pet_energy';
-  static const _coinsKey = 'pet_coins';
-  static const _lastUpdateKey = 'last_update_time';
-  static const _streakKey = 'current_streak';
-  static const _totalDaysKey = 'total_goal_days';
+  // ─── Active slot (1~3) ───────────────────────────────────────
+  static int _slot = 1;
+  static int get activeSlot => _slot;
+  static void setActiveSlot(int s) => _slot = s;
 
-  // Customization
-  static const _equippedAccKey = 'equipped_accessory';
-  static const _equippedThemeKey = 'equipped_theme';
-  static const _equippedColorKey = 'equipped_color';
-  static const _unlockedAccKey = 'unlocked_accessories';
-  static const _unlockedThemesKey = 'unlocked_themes';
-  static const _unlockedColorsKey = 'unlocked_colors';
+  // Per-slot key prefix
+  static String get _p => 's${_slot}_';
 
-  // Test mode
-  static const _testModeKey = 'test_mode';
+  // Per-slot keys
+  static String get _goalKey       => '${_p}goal_minutes';
+  static String get _levelKey      => '${_p}pet_level';
+  static String get _xpKey         => '${_p}pet_xp';
+  static String get _lastDateKey   => '${_p}last_reward_date';
+  static String get _hungerKey     => '${_p}pet_hunger';
+  static String get _happinessKey  => '${_p}pet_happiness';
+  static String get _energyKey     => '${_p}pet_energy';
+  static String get _coinsKey      => '${_p}pet_coins';
+  static String get _lastUpdateKey => '${_p}last_update_time';
+  static String get _streakKey     => '${_p}current_streak';
+  static String get _totalDaysKey  => '${_p}total_goal_days';
+
+  // Per-slot customization keys
+  static String get _equippedAccKey    => '${_p}equipped_accessory';
+  static String get _equippedThemeKey  => '${_p}equipped_theme';
+  static String get _equippedColorKey  => '${_p}equipped_color';
+  static String get _unlockedAccKey    => '${_p}unlocked_accessories';
+  static String get _unlockedThemesKey => '${_p}unlocked_themes';
+  static String get _unlockedColorsKey => '${_p}unlocked_colors';
+
+  // Global keys (not per-slot)
+  static const _testModeKey  = 'test_mode';
   static const _testUsageKey = 'test_usage_minutes';
+
+  // ─── Character slot management ───────────────────────────────
+
+  static String _slotNameKey(int slot) => 'slot_${slot}_name';
+
+  static Future<String?> getSlotName(int slot) async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString(_slotNameKey(slot));
+    return (name == null || name.isEmpty) ? null : name;
+  }
+
+  static Future<void> createSlot(int slot, String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_slotNameKey(slot), name);
+  }
+
+  static Future<void> deleteSlot(int slot) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_slotNameKey(slot));
+    // Remove all slot-specific keys
+    final prefix = 's${slot}_';
+    final keys = prefs.getKeys().where((k) => k.startsWith(prefix)).toList();
+    for (final k in keys) {
+      await prefs.remove(k);
+    }
+  }
+
+  // Returns list of (slot, name, level) for all 3 slots
+  static Future<List<(int, String?, int)>> listSlots() async {
+    final prefs = await SharedPreferences.getInstance();
+    return List.generate(3, (i) {
+      final slot = i + 1;
+      final name = prefs.getString(_slotNameKey(slot));
+      final level = prefs.getInt('s${slot}_pet_level') ?? 1;
+      return (slot, (name == null || name.isEmpty) ? null : name, level);
+    });
+  }
 
   // ─── Pet stats ───────────────────────────────────────────────
 
@@ -46,12 +91,10 @@ class StorageService {
     final now = DateTime.now().millisecondsSinceEpoch;
     final hours = (now - lastUpdate) / 3600000.0;
 
-    // 스탯 감소 속도 완화: 배고픔 4→2.5/h, 행복 3→2/h, 에너지 2→1.5/h
     int hunger =
         ((prefs.getInt(_hungerKey) ?? 80) - hours * 2.5).round().clamp(0, 100);
-    int happiness = ((prefs.getInt(_happinessKey) ?? 80) - hours * 2.0)
-        .round()
-        .clamp(0, 100);
+    int happiness =
+        ((prefs.getInt(_happinessKey) ?? 80) - hours * 2.0).round().clamp(0, 100);
     int energy =
         ((prefs.getInt(_energyKey) ?? 80) - hours * 1.5).round().clamp(0, 100);
 
@@ -83,7 +126,7 @@ class StorageService {
     await prefs.setInt(_goalKey, minutes);
   }
 
-  // ─── Care actions (쿨다운 + XP/코인 보상) ─────────────────────
+  // ─── Care actions ────────────────────────────────────────────
 
   static int _cooldownMs(int hours) => hours * 60 * 60 * 1000;
 
@@ -91,7 +134,7 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     const cooldownHours = {'feed': 2, 'play': 1, 'sleep': 4, 'clean': 3};
     final hours = cooldownHours[action] ?? 1;
-    final lastTime = prefs.getInt('last_${action}_time') ?? 0;
+    final lastTime = prefs.getInt('${_p}last_${action}_time') ?? 0;
     final now = DateTime.now().millisecondsSinceEpoch;
     final remaining = _cooldownMs(hours) - (now - lastTime);
     return remaining > 0 ? remaining : 0;
@@ -106,7 +149,7 @@ class StorageService {
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now().millisecondsSinceEpoch;
-    final lastTime = prefs.getInt('last_${key}_time') ?? 0;
+    final lastTime = prefs.getInt('${_p}last_${key}_time') ?? 0;
     final remaining = _cooldownMs(cooldownHours) - (now - lastTime);
 
     if (remaining > 0) {
@@ -120,9 +163,9 @@ class StorageService {
       );
     }
 
-    await prefs.setInt('last_${key}_time', now);
+    await prefs.setInt('${_p}last_${key}_time', now);
 
-    const statKeyMap = {
+    final statKeyMap = {
       'hunger': _hungerKey,
       'happiness': _happinessKey,
       'energy': _energyKey,
@@ -193,7 +236,7 @@ class StorageService {
     final coins = prefs.getInt(_coinsKey) ?? 0;
     if (coins < cost) return false;
     await prefs.setInt(_coinsKey, coins - cost);
-    const statKeyMap = {
+    final statKeyMap = {
       'hunger': _hungerKey,
       'happiness': _happinessKey,
       'energy': _energyKey,
@@ -238,11 +281,9 @@ class StorageService {
     await prefs.setString(_lastDateKey, today);
     xp += 20;
 
-    // 절약 분당 보너스: 5분 절약 = 1코인
     final minutesSaved = (goalMinutes - usageMinutes).clamp(0, goalMinutes);
     final minuteBonus = minutesSaved ~/ 5;
 
-    // 스트릭 보너스: 기본 20, 3일+ = 35, 7일+ = 50
     int coinBonus = 20;
     if (streak >= 7) coinBonus = 50;
     else if (streak >= 3) coinBonus = 35;
@@ -358,78 +399,41 @@ class StorageService {
 
   static String? accessoryAsset(String id) {
     switch (id) {
-      case 'crown':
-        return 'assets/svg/acc_crown.svg';
-      case 'ribbon':
-        return 'assets/svg/acc_ribbon.svg';
-      case 'hat':
-        return 'assets/svg/acc_hat.svg';
-      case 'glasses':
-        return 'assets/svg/acc_glasses.svg';
-      case 'santa':
-        return 'assets/svg/acc_santa.svg';
-      case 'halo':
-        return 'assets/svg/acc_halo.svg';
-      default:
-        return null;
+      case 'crown':   return 'assets/svg/acc_crown.svg';
+      case 'ribbon':  return 'assets/svg/acc_ribbon.svg';
+      case 'hat':     return 'assets/svg/acc_hat.svg';
+      case 'glasses': return 'assets/svg/acc_glasses.svg';
+      case 'santa':   return 'assets/svg/acc_santa.svg';
+      case 'halo':    return 'assets/svg/acc_halo.svg';
+      default:        return null;
     }
   }
 
   static Color? characterColor(String id) {
     switch (id) {
-      case 'mint':
-        return const Color(0xFF80D0C0);
-      case 'yellow':
-        return const Color(0xFFFFD080);
-      case 'sky':
-        return const Color(0xFF80B8E0);
-      case 'lavender':
-        return const Color(0xFFB880E0);
-      case 'peach':
-        return const Color(0xFFFFB080);
-      default:
-        return null;
+      case 'mint':     return const Color(0xFF80D0C0);
+      case 'yellow':   return const Color(0xFFFFD080);
+      case 'sky':      return const Color(0xFF80B8E0);
+      case 'lavender': return const Color(0xFFB880E0);
+      case 'peach':    return const Color(0xFFFFB080);
+      default:         return null;
     }
   }
 
   static List<Color> themeColors(String id) {
     switch (id) {
       case 'sky':
-        return [
-          const Color(0xFFE3F2FD),
-          const Color(0xFFBBDEFB),
-          const Color(0xFFE1F5FE)
-        ];
+        return [const Color(0xFFE3F2FD), const Color(0xFFBBDEFB), const Color(0xFFE1F5FE)];
       case 'forest':
-        return [
-          const Color(0xFFE8F5E9),
-          const Color(0xFFC8E6C9),
-          const Color(0xFFDCEDC8)
-        ];
+        return [const Color(0xFFE8F5E9), const Color(0xFFC8E6C9), const Color(0xFFDCEDC8)];
       case 'sunset':
-        return [
-          const Color(0xFFFFF8E1),
-          const Color(0xFFFFECB3),
-          const Color(0xFFFFE0B2)
-        ];
+        return [const Color(0xFFFFF8E1), const Color(0xFFFFECB3), const Color(0xFFFFE0B2)];
       case 'lavender':
-        return [
-          const Color(0xFFF3E5F5),
-          const Color(0xFFE1BEE7),
-          const Color(0xFFEDE7F6)
-        ];
+        return [const Color(0xFFF3E5F5), const Color(0xFFE1BEE7), const Color(0xFFEDE7F6)];
       case 'ocean':
-        return [
-          const Color(0xFFE0F7FA),
-          const Color(0xFFB2EBF2),
-          const Color(0xFFE0F2F1)
-        ];
+        return [const Color(0xFFE0F7FA), const Color(0xFFB2EBF2), const Color(0xFFE0F2F1)];
       default:
-        return [
-          const Color(0xFFFCE4EC),
-          const Color(0xFFF8BBD9),
-          const Color(0xFFEDD5F5)
-        ];
+        return [const Color(0xFFFCE4EC), const Color(0xFFF8BBD9), const Color(0xFFEDD5F5)];
     }
   }
 }

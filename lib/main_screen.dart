@@ -5,6 +5,7 @@ import 'care_tab.dart';
 import 'shop_tab.dart';
 import 'ranking_tab.dart';
 import 'game_background.dart';
+import 'character_select_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -22,6 +23,13 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _loadTheme();
+  }
+
+  void _goToCharacterSelect() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const CharacterSelectScreen()),
+    );
   }
 
   Future<void> _loadTheme() async {
@@ -59,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
                   HomeTab(customVersion: _customVersion),
                   CareTab(customVersion: _customVersion),
                   ShopTab(onCustomizationChanged: _loadTheme),
-                  const RankingTab(),
+                  RankingTab(refreshTrigger: _index == 3 ? _customVersion : 0),
                 ],
               ),
             ),
@@ -110,12 +118,32 @@ class _MainScreenState extends State<MainScreen> {
               borderRadius: BorderRadius.circular(3),
             ),
           ),
-          Text(
-            titles[_index],
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF5A3210),
+          Expanded(
+            child: Text(
+              titles[_index],
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF5A3210),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: _goToCharacterSelect,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFE0A0).withValues(alpha: 0.8),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: const Color(0xFFD4914A).withValues(alpha: 0.5),
+                ),
+              ),
+              child: const Row(mainAxisSize: MainAxisSize.min, children: [
+                Text('🦆', style: TextStyle(fontSize: 14)),
+                SizedBox(width: 4),
+                Text('변경', style: TextStyle(fontSize: 12, color: Color(0xFF5A3210), fontWeight: FontWeight.bold)),
+              ]),
             ),
           ),
         ]),
@@ -159,7 +187,10 @@ class _MainScreenState extends State<MainScreen> {
             child: NavigationBar(
               height: 66,
               selectedIndex: _index,
-              onDestinationSelected: (i) => setState(() => _index = i),
+              onDestinationSelected: (i) => setState(() {
+                _index = i;
+                if (i == 3) _customVersion++; // ranking 탭 진입 시 새로고침
+              }),
               backgroundColor: Colors.transparent,
               indicatorColor: const Color(0xFFFFD0A0),
               labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,

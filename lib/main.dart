@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main_screen.dart';
+import 'character_select_screen.dart';
 import 'settings_screen.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class DamagochiApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF85B3)),
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      home: const CharacterSelectScreen(),
       routes: {
         '/settings': (context) => const SettingsScreen(),
       },

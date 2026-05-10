@@ -4,7 +4,8 @@ import 'usage_service.dart';
 import 'pet_model.dart';
 
 class RankingTab extends StatefulWidget {
-  const RankingTab({super.key});
+  final int refreshTrigger;
+  const RankingTab({super.key, this.refreshTrigger = 0});
 
   @override
   State<RankingTab> createState() => _RankingTabState();
@@ -21,7 +22,16 @@ class _RankingTabState extends State<RankingTab> {
     _load();
   }
 
+  @override
+  void didUpdateWidget(RankingTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshTrigger != widget.refreshTrigger) {
+      _load();
+    }
+  }
+
   Future<void> _load() async {
+    if (mounted) setState(() => _loading = true);
     _data = await StorageService.loadAll();
     _usageMinutes = await UsageService.getInstagramUsageMinutes();
     if (mounted) setState(() => _loading = false);

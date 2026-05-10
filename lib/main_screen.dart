@@ -47,6 +47,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF38B8F0),
       body: GameBackground(
+        themeId: _themeId,
         child: SafeArea(
           bottom: false,
           child: Column(children: [

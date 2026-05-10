@@ -238,10 +238,15 @@ class StorageService {
     await prefs.setString(_lastDateKey, today);
     xp += 20;
 
-    // 스트릭 보너스: 3일+ = 22코인, 7일+ = 30코인
-    int coinBonus = 15;
-    if (streak >= 7) coinBonus = 30;
-    else if (streak >= 3) coinBonus = 22;
+    // 절약 분당 보너스: 5분 절약 = 1코인
+    final minutesSaved = (goalMinutes - usageMinutes).clamp(0, goalMinutes);
+    final minuteBonus = minutesSaved ~/ 5;
+
+    // 스트릭 보너스: 기본 20, 3일+ = 35, 7일+ = 50
+    int coinBonus = 20;
+    if (streak >= 7) coinBonus = 50;
+    else if (streak >= 3) coinBonus = 35;
+    coinBonus += minuteBonus;
     coins += coinBonus;
     streak++;
     totalDays++;

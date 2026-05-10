@@ -33,48 +33,48 @@ class _ColorItem {
 }
 
 const _items = [
-  _Item('🍙', '주먹밥', '배고픔 +25', 10, {'hunger': 25},
+  _Item('🍙', '주먹밥', '배고픔 +25', 15, {'hunger': 25},
       [Color(0xFFFFF8E1), Color(0xFFFFECB3)]),
-  _Item('🎂', '생일케이크', '배고픔 +45\n행복 +15', 35,
+  _Item('🎂', '생일케이크', '배고픔 +45\n행복 +15', 45,
       {'hunger': 45, 'happiness': 15},
       [Color(0xFFFCE4EC), Color(0xFFF8BBD9)]),
-  _Item('🎮', '장난감', '행복 +35', 25, {'happiness': 35},
+  _Item('🎮', '장난감', '행복 +35', 30, {'happiness': 35},
       [Color(0xFFE8F5E9), Color(0xFFC8E6C9)]),
-  _Item('⚡', '에너지드링크', '에너지 +40', 20, {'energy': 40},
+  _Item('⚡', '에너지드링크', '에너지 +40', 25, {'energy': 40},
       [Color(0xFFE3F2FD), Color(0xFFBBDEFB)]),
-  _Item('💊', '비타민', '모든 스탯 +20', 55,
+  _Item('💊', '비타민', '모든 스탯 +20', 70,
       {'hunger': 20, 'happiness': 20, 'energy': 20},
       [Color(0xFFF3E5F5), Color(0xFFE1BEE7)]),
-  _Item('🍱', '프리미엄 도시락', '배고픔 +60\n에너지 +20', 65,
+  _Item('🍱', '프리미엄 도시락', '배고픔 +60\n에너지 +20', 90,
       {'hunger': 60, 'energy': 20},
       [Color(0xFFFFE0B2), Color(0xFFFFCC80)]),
 ];
 
 const _accessories = [
-  _AccItem('crown', '👑', '왕관', 50),
-  _AccItem('ribbon', '🎀', '리본', 30),
-  _AccItem('hat', '⭐', '별모자', 40),
-  _AccItem('glasses', '👓', '안경', 35),
-  _AccItem('santa', '🎅', '산타모자', 45),
-  _AccItem('halo', '😇', '천사링', 60),
+  _AccItem('crown', '👑', '왕관', 120),
+  _AccItem('ribbon', '🎀', '리본', 60),
+  _AccItem('hat', '⭐', '별모자', 80),
+  _AccItem('glasses', '👓', '안경', 70),
+  _AccItem('santa', '🎅', '산타모자', 90),
+  _AccItem('halo', '😇', '천사링', 150),
 ];
 
 final _themes = [
   _ThemeItem('default', '🌸 기본', StorageService.themeColors('default'), 0),
-  _ThemeItem('sky', '☁️ 하늘', StorageService.themeColors('sky'), 30),
-  _ThemeItem('forest', '🌿 숲', StorageService.themeColors('forest'), 30),
-  _ThemeItem('sunset', '🌅 노을', StorageService.themeColors('sunset'), 30),
-  _ThemeItem('lavender', '💜 라벤더', StorageService.themeColors('lavender'), 30),
-  _ThemeItem('ocean', '🌊 바다', StorageService.themeColors('ocean'), 30),
+  _ThemeItem('sky', '☁️ 하늘', StorageService.themeColors('sky'), 60),
+  _ThemeItem('forest', '🌿 숲', StorageService.themeColors('forest'), 60),
+  _ThemeItem('sunset', '🌅 노을', StorageService.themeColors('sunset'), 60),
+  _ThemeItem('lavender', '💜 라벤더', StorageService.themeColors('lavender'), 60),
+  _ThemeItem('ocean', '🌊 바다', StorageService.themeColors('ocean'), 60),
 ];
 
 final _colors = [
   _ColorItem('pink', '🩷 핑크', null, 0),
-  _ColorItem('mint', '🩵 민트', const Color(0xFF80D0C0), 20),
-  _ColorItem('yellow', '💛 노랑', const Color(0xFFFFD080), 20),
-  _ColorItem('sky', '🩶 하늘', const Color(0xFF80B8E0), 20),
-  _ColorItem('lavender', '💜 라벤더', const Color(0xFFB880E0), 20),
-  _ColorItem('peach', '🧡 복숭아', const Color(0xFFFFB080), 20),
+  _ColorItem('mint', '🩵 민트', const Color(0xFF80D0C0), 35),
+  _ColorItem('yellow', '💛 노랑', const Color(0xFFFFD080), 35),
+  _ColorItem('sky', '🩶 하늘', const Color(0xFF80B8E0), 35),
+  _ColorItem('lavender', '💜 라벤더', const Color(0xFFB880E0), 35),
+  _ColorItem('peach', '🧡 복숭아', const Color(0xFFFFB080), 35),
 ];
 
 // ─── ShopTab ────────────────────────────────────────────────────

@@ -1,54 +1,82 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="bodyH" cx="38%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FFE8F4"/>
+      <stop offset="100%" stop-color="#FFB8D8"/>
+    </radialGradient>
+    <radialGradient id="earH" cx="35%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#FFD0E8"/>
+      <stop offset="100%" stop-color="#FFA8C8"/>
+    </radialGradient>
+  </defs>
+
   <!-- Ground shadow -->
-  <ellipse cx="100" cy="191" rx="52" ry="8" fill="#FFD700" opacity="0.15"/>
+  <ellipse cx="100" cy="191" rx="52" ry="8" fill="#FFD700" opacity="0.16"/>
 
   <!-- Left ear -->
-  <ellipse cx="58" cy="50" rx="24" ry="28" fill="#FFB0D0"/>
+  <ellipse cx="58" cy="50" rx="24" ry="28" fill="url(#earH)"/>
   <ellipse cx="58" cy="54" rx="14" ry="18" fill="#FFE8F8"/>
+  <ellipse cx="54" cy="47" rx="5" ry="7" fill="white" opacity="0.3"/>
   <!-- Right ear -->
-  <ellipse cx="142" cy="50" rx="24" ry="28" fill="#FFB0D0"/>
+  <ellipse cx="142" cy="50" rx="24" ry="28" fill="url(#earH)"/>
   <ellipse cx="142" cy="54" rx="14" ry="18" fill="#FFE8F8"/>
+  <ellipse cx="138" cy="47" rx="5" ry="7" fill="white" opacity="0.3"/>
 
-  <!-- Body (slightly bigger, happy) -->
-  <ellipse cx="100" cy="118" rx="75" ry="73" fill="#FFD0E8"/>
-  <ellipse cx="100" cy="118" rx="75" ry="73" fill="none" stroke="#FF90BE" stroke-width="2.5"/>
+  <!-- Body (slightly bigger/bouncier) -->
+  <ellipse cx="100" cy="118" rx="75" ry="73" fill="url(#bodyH)"/>
+  <ellipse cx="100" cy="118" rx="75" ry="73" fill="none" stroke="#FFB0CC" stroke-width="2"/>
+  <!-- Body shine -->
+  <ellipse cx="76" cy="93" rx="30" ry="20" fill="white" opacity="0.22" transform="rotate(-22 76 93)"/>
 
-  <!-- Arms raised slightly -->
-  <ellipse cx="19" cy="120" rx="17" ry="14" fill="#FFD0E8" stroke="#FF90BE" stroke-width="2.5" transform="rotate(-18 19 120)"/>
-  <ellipse cx="181" cy="120" rx="17" ry="14" fill="#FFD0E8" stroke="#FF90BE" stroke-width="2.5" transform="rotate(18 181 120)"/>
+  <!-- Arms raised with excitement -->
+  <ellipse cx="19" cy="118" rx="17" ry="14" fill="#FFBCD8" stroke="#FFB0CC" stroke-width="2" transform="rotate(-22 19 118)"/>
+  <ellipse cx="181" cy="118" rx="17" ry="14" fill="#FFBCD8" stroke="#FFB0CC" stroke-width="2" transform="rotate(22 181 118)"/>
 
   <!-- Left eye white -->
   <ellipse cx="78" cy="102" rx="21" ry="23" fill="white"/>
   <!-- Right eye white -->
   <ellipse cx="122" cy="102" rx="21" ry="23" fill="white"/>
 
-  <!-- Pupils big -->
+  <!-- Pupils (big and sparkling) -->
   <circle cx="79" cy="106" r="14" fill="#3A1800"/>
   <circle cx="123" cy="106" r="14" fill="#3A1800"/>
+  <!-- Inner depth -->
+  <circle cx="80" cy="108" r="8" fill="#5C2E00" opacity="0.5"/>
+  <circle cx="124" cy="108" r="8" fill="#5C2E00" opacity="0.5"/>
 
-  <!-- Inner pupil lighter -->
-  <circle cx="80" cy="108" r="7" fill="#5C2E00" opacity="0.55"/>
-  <circle cx="124" cy="108" r="7" fill="#5C2E00" opacity="0.55"/>
-
-  <!-- Eye shine large -->
+  <!-- Eye highlights (extra sparkly) -->
   <circle cx="72" cy="98" r="6.5" fill="white"/>
   <circle cx="116" cy="98" r="6.5" fill="white"/>
-  <!-- Eye shine small -->
   <circle cx="86" cy="112" r="3" fill="white"/>
   <circle cx="130" cy="112" r="3" fill="white"/>
-  <!-- Tiny twinkle -->
-  <circle cx="72" cy="112" r="1.5" fill="white"/>
-  <circle cx="116" cy="112" r="1.5" fill="white"/>
+  <circle cx="72" cy="113" r="1.8" fill="white"/>
+  <circle cx="116" cy="113" r="1.8" fill="white"/>
+  <!-- Star cross sparkle -->
+  <line x1="79" y1="103" x2="79" y2="112" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+  <line x1="75" y1="107.5" x2="83" y2="107.5" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
 
-  <!-- Nose -->
-  <circle cx="100" cy="118" r="4.5" fill="#FF6B99"/>
+  <!-- Left eyelashes (3, dramatic) -->
+  <path d="M 62 87 Q 57 78 54 72" stroke="#3A1800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <path d="M 78 79 Q 76 70 73 64" stroke="#3A1800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <path d="M 94 87 Q 99 78 102 73" stroke="#3A1800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <!-- Right eyelashes -->
+  <path d="M 106 87 Q 101 78 98 73" stroke="#3A1800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <path d="M 122 79 Q 124 70 127 64" stroke="#3A1800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <path d="M 138 87 Q 143 78 146 72" stroke="#3A1800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+
+  <!-- Heart nose -->
+  <path d="M 100 122 C 97 120 92 116 92 113 C 92 110 96 108 100 112 C 104 108 108 110 108 113 C 108 116 103 120 100 122 Z" fill="#FF6B99"/>
 
   <!-- Big happy blush -->
   <ellipse cx="55" cy="127" rx="23" ry="15" fill="#FF90BE" opacity="0.38"/>
   <ellipse cx="145" cy="127" rx="23" ry="15" fill="#FF90BE" opacity="0.38"/>
+  <!-- Cheek shine -->
+  <circle cx="47" cy="122" r="4" fill="white" opacity="0.42"/>
+  <circle cx="137" cy="122" r="4" fill="white" opacity="0.42"/>
 
-  <!-- Wide happy mouth -->
-  <path d="M 75 134 Q 100 163 125 134" stroke="#E8305A" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Wide happy smile with teeth -->
+  <path d="M 75 134 Q 100 163 125 134" stroke="#E8305A" stroke-width="4" fill="#FFB0CC" stroke-linecap="round"/>
+  <path d="M 80 140 Q 100 154 120 140" fill="white"/>
 
   <!-- Sparkles -->
   <g transform="translate(24,34)">
@@ -64,9 +92,14 @@
     <line x1="7" y1="-7" x2="-7" y2="7" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
   </g>
   <circle cx="38" cy="58" r="4" fill="#FFD700" opacity="0.8"/>
-  <circle cx="163" cy="47" r="3.5" fill="#FFD700" opacity="0.8"/>
+  <circle cx="163" cy="48" r="3.5" fill="#FFD700" opacity="0.8"/>
 
   <!-- Floating hearts -->
-  <path d="M 153 78 C 153 74 149 71 149 75 C 149 71 145 74 145 78 C 145 83 153 88 153 88 C 153 88 161 83 161 78 C 161 74 157 71 157 75 C 157 71 153 74 153 78 Z" fill="#FF6B99" opacity="0.7"/>
-  <path d="M 39 80 C 39 77 36 75 36 78 C 36 75 33 77 33 80 C 33 84 39 88 39 88 C 39 88 45 84 45 80 C 45 77 42 75 42 78 C 42 75 39 77 39 80 Z" fill="#FF6B99" opacity="0.55"/>
+  <path d="M 153 80 C 148 75 142 72 142 77 C 142 72 136 75 136 80 C 136 86 153 94 153 94 C 153 94 170 86 170 80 C 170 75 164 72 164 77 C 164 72 158 75 153 80 Z" fill="#FF6B99" opacity="0.0"/>
+  <!-- Simple heart left -->
+  <path d="M 40 80 C 40 77 37 75 37 78 C 37 75 34 77 34 80 C 34 84 40 88 40 88 C 40 88 46 84 46 80 C 46 77 43 75 43 78 C 43 75 40 77 40 80 Z" fill="#FF6B99" opacity="0.6"/>
+  <!-- Simple heart right -->
+  <path d="M 157 72 C 157 69 154 67 154 70 C 154 67 151 69 151 72 C 151 76 157 80 157 80 C 157 80 163 76 163 72 C 163 69 160 67 160 70 C 160 67 157 69 157 72 Z" fill="#FF6B99" opacity="0.65"/>
+  <!-- Tiny heart top right -->
+  <path d="M 174 56 C 174 54 172 53 172 55 C 172 53 170 54 170 56 C 170 58 174 61 174 61 C 174 61 178 58 178 56 C 178 54 176 53 176 55 C 176 53 174 54 174 56 Z" fill="#FFB6D9" opacity="0.8"/>
 </svg>

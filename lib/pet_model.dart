@@ -5,44 +5,55 @@ class PetModel {
   final int usageMinutes;
   final int level;
   final int xp;
+  final int hunger;
+  final int happiness;
+  final int energy;
+  final int coins;
 
   const PetModel({
     required this.goalMinutes,
     required this.usageMinutes,
     required this.level,
     required this.xp,
+    required this.hunger,
+    required this.happiness,
+    required this.energy,
+    required this.coins,
   });
 
+  double get overallHealth => (hunger + happiness + energy) / 300.0;
+
   PetState get state {
-    if (goalMinutes == 0) return PetState.normal;
-    final ratio = usageMinutes / goalMinutes;
-    if (ratio < 0.5) return PetState.happy;
-    if (ratio < 1.0) return PetState.normal;
-    if (ratio < 1.5) return PetState.tired;
-    return PetState.sick;
+    if (overallHealth < 0.25) return PetState.sick;
+    if (goalMinutes > 0 && usageMinutes >= goalMinutes * 1.5) return PetState.sick;
+    if (goalMinutes > 0 && usageMinutes >= goalMinutes) return PetState.tired;
+    if (overallHealth < 0.5) return PetState.tired;
+    if (overallHealth >= 0.75 &&
+        (goalMinutes == 0 || usageMinutes < goalMinutes * 0.5)) {
+      return PetState.happy;
+    }
+    return PetState.normal;
   }
 
   int get healthHearts {
-    if (goalMinutes == 0) return 5;
-    final ratio = usageMinutes / goalMinutes;
-    if (ratio <= 0.2) return 5;
-    if (ratio <= 0.5) return 4;
-    if (ratio <= 0.8) return 3;
-    if (ratio <= 1.0) return 2;
-    if (ratio <= 1.5) return 1;
-    return 0;
+    final statScore = overallHealth;
+    final usageScore = goalMinutes > 0
+        ? (1.0 - (usageMinutes / goalMinutes).clamp(0.0, 1.0))
+        : 1.0;
+    final combined = statScore * 0.6 + usageScore * 0.4;
+    return (combined * 5).ceil().clamp(0, 5);
   }
 
   String get statusMessage {
     switch (state) {
       case PetState.happy:
-        return '오늘도 건강해요! 💪';
+        return '최고의 컨디션이에요! 🌟';
       case PetState.normal:
-        return '조금 더 힘내요! 😊';
+        return '오늘도 잘 지내고 있어요 😊';
       case PetState.tired:
-        return '핸드폰을 잠깐 내려놓아요... 😓';
+        return '조금 힘들어요... 💦';
       case PetState.sick:
-        return '많이 아파요! 쉬어주세요... 😢';
+        return '많이 아파요! 도와주세요 😢';
     }
   }
 
@@ -60,6 +71,14 @@ class PetModel {
   }
 
   int get xpToNextLevel => level * 100;
-
   double get xpProgress => xp / xpToNextLevel;
+
+  String get tierName {
+    if (level < 3) return '🐣 새싹';
+    if (level < 6) return '🌱 초보자';
+    if (level < 10) return '🌿 성장중';
+    if (level < 15) return '🌸 능숙자';
+    if (level < 20) return '🌟 전문가';
+    return '👑 마스터';
+  }
 }

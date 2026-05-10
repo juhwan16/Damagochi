@@ -1,27 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <!-- glow -->
-  <circle cx="100" cy="115" r="80" fill="#FFE8F5" opacity="0.5"/>
-  <!-- ear bumps -->
-  <circle cx="55" cy="62" r="22" fill="#FFC4E0"/>
-  <circle cx="145" cy="62" r="22" fill="#FFC4E0"/>
-  <!-- body -->
-  <ellipse cx="100" cy="120" rx="68" ry="63" fill="#FFD6EC"/>
-  <ellipse cx="100" cy="120" rx="68" ry="63" fill="none" stroke="#FF8CC0" stroke-width="3"/>
-  <!-- arms neutral -->
-  <ellipse cx="35" cy="108" rx="16" ry="22" fill="#FFD6EC" stroke="#FF8CC0" stroke-width="2.5" transform="rotate(-10 35 108)"/>
-  <ellipse cx="165" cy="108" rx="16" ry="22" fill="#FFD6EC" stroke="#FF8CC0" stroke-width="2.5" transform="rotate(10 165 108)"/>
-  <!-- round eyes -->
-  <circle cx="78" cy="107" r="13" fill="white"/>
-  <circle cx="122" cy="107" r="13" fill="white"/>
-  <circle cx="78" cy="107" r="8" fill="#3D1A00"/>
-  <circle cx="122" cy="107" r="8" fill="#3D1A00"/>
-  <circle cx="81" cy="104" r="3" fill="white"/>
-  <circle cx="125" cy="104" r="3" fill="white"/>
-  <!-- cheeks -->
-  <ellipse cx="63" cy="126" rx="14" ry="8" fill="#FF8CC0" opacity="0.4"/>
-  <ellipse cx="137" cy="126" rx="14" ry="8" fill="#FF8CC0" opacity="0.4"/>
-  <!-- nose -->
-  <circle cx="100" cy="118" r="3" fill="#FF8CC0"/>
-  <!-- small smile -->
-  <path d="M 82 132 Q 100 144 118 132" fill="none" stroke="#E8355A" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="100" cy="118" r="80" fill="#FFE8F5" opacity="0.4"/>
+  <circle cx="54" cy="66" r="20" fill="#FFC0DC"/>
+  <circle cx="146" cy="66" r="20" fill="#FFC0DC"/>
+  <circle cx="100" cy="118" r="65" fill="#FFD0E8"/>
+  <circle cx="100" cy="118" r="65" fill="none" stroke="#FF90BE" stroke-width="3"/>
+  <circle cx="33" cy="108" r="16" fill="#FFD0E8" stroke="#FF90BE" stroke-width="2.5"/>
+  <circle cx="167" cy="108" r="16" fill="#FFD0E8" stroke="#FF90BE" stroke-width="2.5"/>
+  <circle cx="78" cy="106" r="14" fill="white"/>
+  <circle cx="122" cy="106" r="14" fill="white"/>
+  <circle cx="78" cy="106" r="9" fill="#3D1A00"/>
+  <circle cx="122" cy="106" r="9" fill="#3D1A00"/>
+  <circle cx="82" cy="102" r="3.5" fill="white"/>
+  <circle cx="126" cy="102" r="3.5" fill="white"/>
+  <ellipse cx="62" cy="122" rx="14" ry="8" fill="#FF90BE" opacity="0.4"/>
+  <ellipse cx="138" cy="122" rx="14" ry="8" fill="#FF90BE" opacity="0.4"/>
+  <circle cx="100" cy="116" r="3.5" fill="#FF90BE"/>
+  <path d="M 80 132 Q 100 144 120 132" stroke="#E8305A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
 </svg>

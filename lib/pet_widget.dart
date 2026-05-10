@@ -4,8 +4,9 @@ import 'pet_model.dart';
 
 class PetWidget extends StatelessWidget {
   final PetState state;
+  final double size;
 
-  const PetWidget({super.key, required this.state});
+  const PetWidget({super.key, required this.state, this.size = 210});
 
   String get _svgAsset {
     switch (state) {
@@ -22,10 +23,6 @@ class PetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      _svgAsset,
-      width: 210,
-      height: 210,
-    );
+    return SvgPicture.asset(_svgAsset, width: size, height: size);
   }
 }

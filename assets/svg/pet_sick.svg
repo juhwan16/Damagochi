@@ -1,44 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <!-- ear bumps (grey) -->
-  <circle cx="55" cy="62" r="22" fill="#B8B0C0"/>
-  <circle cx="145" cy="62" r="22" fill="#B8B0C0"/>
-  <!-- body -->
-  <ellipse cx="100" cy="120" rx="68" ry="63" fill="#C8C0D0"/>
-  <ellipse cx="100" cy="120" rx="68" ry="63" fill="none" stroke="#9888A8" stroke-width="3"/>
-  <!-- arms drooping down -->
-  <ellipse cx="37" cy="125" rx="16" ry="22" fill="#C8C0D0" stroke="#9888A8" stroke-width="2.5" transform="rotate(35 37 125)"/>
-  <ellipse cx="163" cy="125" rx="16" ry="22" fill="#C8C0D0" stroke="#9888A8" stroke-width="2.5" transform="rotate(-35 163 125)"/>
-  <!-- X eyes left -->
-  <line x1="64" y1="97" x2="86" y2="119" stroke="#3D1A00" stroke-width="4.5" stroke-linecap="round"/>
-  <line x1="86" y1="97" x2="64" y2="119" stroke="#3D1A00" stroke-width="4.5" stroke-linecap="round"/>
-  <!-- X eyes right -->
-  <line x1="114" y1="97" x2="136" y2="119" stroke="#3D1A00" stroke-width="4.5" stroke-linecap="round"/>
-  <line x1="136" y1="97" x2="114" y2="119" stroke="#3D1A00" stroke-width="4.5" stroke-linecap="round"/>
-  <!-- cheeks (pale) -->
-  <ellipse cx="63" cy="128" rx="13" ry="8" fill="#9888A8" opacity="0.25"/>
-  <ellipse cx="137" cy="128" rx="13" ry="8" fill="#9888A8" opacity="0.25"/>
-  <!-- nose -->
+  <circle cx="54" cy="66" r="20" fill="#B0A8C0"/>
+  <circle cx="146" cy="66" r="20" fill="#B0A8C0"/>
+  <circle cx="100" cy="118" r="65" fill="#C8C0D4"/>
+  <circle cx="100" cy="118" r="65" fill="none" stroke="#9888A8" stroke-width="3"/>
+  <circle cx="33" cy="126" r="15" fill="#C8C0D4" stroke="#9888A8" stroke-width="2.5"/>
+  <circle cx="167" cy="126" r="15" fill="#C8C0D4" stroke="#9888A8" stroke-width="2.5"/>
+  <line x1="65" y1="94" x2="89" y2="118" stroke="#3D1A00" stroke-width="5" stroke-linecap="round"/>
+  <line x1="89" y1="94" x2="65" y2="118" stroke="#3D1A00" stroke-width="5" stroke-linecap="round"/>
+  <line x1="111" y1="94" x2="135" y2="118" stroke="#3D1A00" stroke-width="5" stroke-linecap="round"/>
+  <line x1="135" y1="94" x2="111" y2="118" stroke="#3D1A00" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="62" cy="126" rx="12" ry="7" fill="#9888A8" opacity="0.25"/>
+  <ellipse cx="138" cy="126" rx="12" ry="7" fill="#9888A8" opacity="0.25"/>
   <circle cx="100" cy="120" r="3" fill="#9888A8"/>
-  <!-- sad wavy mouth -->
-  <path d="M 75 140 Q 87 132 100 138 Q 113 144 125 136" fill="none" stroke="#6B4A80" stroke-width="3.5" stroke-linecap="round"/>
-  <!-- sweat drops -->
-  <g transform="translate(148, 72)">
-    <path d="M0,-13 C-7,-8 -9,1 0,13 C9,1 7,-8 0,-13Z" fill="#A8D8F0"/>
-  </g>
-  <g transform="translate(162, 88)">
-    <path d="M0,-8 C-4,-5 -6,1 0,8 C6,1 4,-5 0,-8Z" fill="#A8D8F0"/>
-  </g>
-  <g transform="translate(140, 90)">
-    <path d="M0,-6 C-3,-4 -4,0 0,6 C4,0 3,-4 0,-6Z" fill="#A8D8F0"/>
-  </g>
-  <!-- little stars (dizzy) -->
-  <g transform="translate(28,45)">
+  <path d="M 74 140 Q 100 124 126 140" stroke="#6B4A80" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M 150 70 C 144 62 142 76 150 82 C 158 76 156 62 150 70 Z" fill="#A8D8F0"/>
+  <path d="M 163 84 C 158 78 156 88 163 93 C 170 88 168 78 163 84 Z" fill="#A8D8F0"/>
+  <path d="M 145 86 C 141 80 140 89 145 93 C 150 89 149 80 145 86 Z" fill="#A8D8F0"/>
+  <g transform="translate(26,42)">
     <line x1="0" y1="-6" x2="0" y2="6" stroke="#C0A0D0" stroke-width="2" stroke-linecap="round"/>
     <line x1="-6" y1="0" x2="6" y2="0" stroke="#C0A0D0" stroke-width="2" stroke-linecap="round"/>
     <line x1="-4" y1="-4" x2="4" y2="4" stroke="#C0A0D0" stroke-width="1.5" stroke-linecap="round"/>
     <line x1="4" y1="-4" x2="-4" y2="4" stroke="#C0A0D0" stroke-width="1.5" stroke-linecap="round"/>
   </g>
-  <g transform="translate(170,40)">
+  <g transform="translate(172,38)">
     <line x1="0" y1="-5" x2="0" y2="5" stroke="#C0A0D0" stroke-width="2" stroke-linecap="round"/>
     <line x1="-5" y1="0" x2="5" y2="0" stroke="#C0A0D0" stroke-width="2" stroke-linecap="round"/>
     <line x1="-3" y1="-3" x2="3" y2="3" stroke="#C0A0D0" stroke-width="1.5" stroke-linecap="round"/>

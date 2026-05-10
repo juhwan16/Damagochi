@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'storage_service.dart';
 import 'usage_service.dart';
 
@@ -30,15 +29,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final perm = await UsageService.hasPermission();
     final test = await StorageService.isTestMode();
     final usage = await StorageService.getTestUsageMinutes();
-    final prefs = await SharedPreferences.getInstance();
     final custom = await StorageService.loadCustomization();
+    final lv = await StorageService.devGetLevelXp();
     setState(() {
       _goalMinutes = goal.toDouble();
       _hasPermission = perm;
       _testMode = test;
       _testUsage = usage.toDouble();
-      _currentLevel = prefs.getInt('pet_level') ?? 1;
-      _currentXp = prefs.getInt('pet_xp') ?? 0;
+      _currentLevel = lv.level;
+      _currentXp = lv.xp;
       _themeId = custom['theme'] as String? ?? 'default';
     });
   }
@@ -263,37 +262,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           runSpacing: 8,
           children: [
             _actionBtn('🪙 코인 999,999', Colors.amber[100]!, () async {
-              final prefs = await _prefs();
-              await prefs.setInt('pet_coins', 999999);
+              await StorageService.devSetCoins(999999);
               if (mounted) _snack('🪙 코인 999,999 지급!');
             }),
             _actionBtn('❤️ 스탯 MAX', Colors.pink[100]!, () async {
-              final prefs = await _prefs();
-              await prefs.setInt('pet_hunger', 100);
-              await prefs.setInt('pet_happiness', 100);
-              await prefs.setInt('pet_energy', 100);
+              await StorageService.devSetStats(100, 100, 100);
               if (mounted) _snack('❤️ 모든 스탯 MAX!');
             }),
             _actionBtn('⬆️ XP +500', Colors.purple[100]!, () async {
-              final prefs = await _prefs();
-              int xp = (prefs.getInt('pet_xp') ?? 0) + 500;
-              int level = prefs.getInt('pet_level') ?? 1;
-              while (xp >= level * 100) { xp -= level * 100; level++; }
-              await prefs.setInt('pet_xp', xp);
-              await prefs.setInt('pet_level', level);
-              setState(() { _currentLevel = level; _currentXp = xp; });
-              if (mounted) _snack('⬆️ XP +500 → Lv.$level');
+              final r = await StorageService.devAddXp(500);
+              setState(() { _currentLevel = r.level; _currentXp = r.xp; });
+              if (mounted) _snack('⬆️ XP +500 → Lv.${r.level}');
             }),
             _actionBtn('🔄 데이터 초기화', Colors.red[100]!, () async {
-              final prefs = await _prefs();
-              await prefs.remove('pet_coins');
-              await prefs.remove('pet_xp');
-              await prefs.remove('pet_level');
-              await prefs.remove('pet_hunger');
-              await prefs.remove('pet_happiness');
-              await prefs.remove('pet_energy');
-              await prefs.remove('current_streak');
-              await prefs.remove('total_goal_days');
+              await StorageService.devReset();
               setState(() { _currentLevel = 1; _currentXp = 0; });
               if (mounted) _snack('🔄 데이터 초기화 완료');
             }),
@@ -330,12 +312,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         _levelBtn(Icons.remove_circle_rounded, Colors.pink[100]!, () async {
           if (_currentLevel <= 1) return;
-          final prefs = await _prefs();
-          final newLevel = _currentLevel - 1;
-          await prefs.setInt('pet_level', newLevel);
-          await prefs.setInt('pet_xp', 0);
-          setState(() { _currentLevel = newLevel; _currentXp = 0; });
-          if (mounted) _snack('⬇️ Lv.$newLevel 으로 내렸어요');
+          final r = await StorageService.devSetLevel(_currentLevel - 1, 0);
+          setState(() { _currentLevel = r.level; _currentXp = 0; });
+          if (mounted) _snack('⬇️ Lv.${r.level} 으로 내렸어요');
         }),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -344,12 +323,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
         ),
         _levelBtn(Icons.add_circle_rounded, const Color(0xFFFF85B3), () async {
-          final prefs = await _prefs();
-          final newLevel = _currentLevel + 1;
-          await prefs.setInt('pet_level', newLevel);
-          await prefs.setInt('pet_xp', 0);
-          setState(() { _currentLevel = newLevel; _currentXp = 0; });
-          if (mounted) _snack('⬆️ Lv.$newLevel 으로 올렸어요!');
+          final r = await StorageService.devSetLevel(_currentLevel + 1, 0);
+          setState(() { _currentLevel = r.level; _currentXp = 0; });
+          if (mounted) _snack('⬆️ Lv.${r.level} 으로 올렸어요!');
         }),
       ]),
       const SizedBox(height: 10),
@@ -359,26 +335,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         runSpacing: 8,
         children: [
           _actionBtn('🎯 레벨업 직전', Colors.purple[50]!, () async {
-            final prefs = await _prefs();
             final almostXp = (_currentLevel * 100) - 5;
-            await prefs.setInt('pet_xp', almostXp.clamp(0, 99999));
+            await StorageService.devSetLevel(_currentLevel, almostXp.clamp(0, 99999));
             setState(() => _currentXp = almostXp.clamp(0, 99999));
-            if (mounted) _snack('🎯 XP를 레벨업 직전으로 설정 (${almostXp}/${_currentLevel * 100})');
+            if (mounted) _snack('🎯 레벨업 직전으로 설정 ($almostXp/${_currentLevel * 100})');
           }),
           _actionBtn('⚡ XP +10', Colors.blue[50]!, () async {
-            final prefs = await _prefs();
-            int xp = _currentXp + 10;
-            int level = _currentLevel;
-            while (xp >= level * 100) { xp -= level * 100; level++; }
-            await prefs.setInt('pet_xp', xp);
-            await prefs.setInt('pet_level', level);
-            setState(() { _currentXp = xp; _currentLevel = level; });
-            if (mounted) _snack('⚡ XP +10 → Lv.$level ($xp/${level * 100} XP)');
+            final r = await StorageService.devAddXp(10);
+            setState(() { _currentXp = r.xp; _currentLevel = r.level; });
+            if (mounted) _snack('⚡ XP +10 → Lv.${r.level} (${r.xp}/${r.level * 100} XP)');
           }),
           _actionBtn('🔢 Lv.1 초기화', Colors.grey[100]!, () async {
-            final prefs = await _prefs();
-            await prefs.setInt('pet_level', 1);
-            await prefs.setInt('pet_xp', 0);
+            await StorageService.devSetLevel(1, 0);
             setState(() { _currentLevel = 1; _currentXp = 0; });
             if (mounted) _snack('🔢 레벨 Lv.1로 초기화');
           }),
@@ -402,11 +370,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       duration: const Duration(seconds: 2),
     ));
-  }
-
-  Future<dynamic> _prefs() async {
-    // ignore: depend_on_referenced_packages
-    return await SharedPreferences.getInstance();
   }
 
   Widget _actionBtn(String label, Color color, VoidCallback onTap) {

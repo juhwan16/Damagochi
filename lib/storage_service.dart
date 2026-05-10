@@ -373,6 +373,53 @@ class StorageService {
     return true;
   }
 
+  // ─── Dev mode helpers ────────────────────────────────────────
+
+  static Future<({int level, int xp})> devGetLevelXp() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (
+      level: prefs.getInt(_levelKey) ?? 1,
+      xp: prefs.getInt(_xpKey) ?? 0,
+    );
+  }
+
+  static Future<({int level, int xp})> devSetLevel(int level, int xp) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_levelKey, level);
+    await prefs.setInt(_xpKey, xp);
+    return (level: level, xp: xp);
+  }
+
+  static Future<({int level, int xp})> devAddXp(int amount) async {
+    final prefs = await SharedPreferences.getInstance();
+    int xp = (prefs.getInt(_xpKey) ?? 0) + amount;
+    int level = prefs.getInt(_levelKey) ?? 1;
+    while (xp >= level * 100) { xp -= level * 100; level++; }
+    await prefs.setInt(_xpKey, xp);
+    await prefs.setInt(_levelKey, level);
+    return (level: level, xp: xp);
+  }
+
+  static Future<void> devSetCoins(int coins) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_coinsKey, coins);
+  }
+
+  static Future<void> devSetStats(int hunger, int happiness, int energy) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_hungerKey, hunger);
+    await prefs.setInt(_happinessKey, happiness);
+    await prefs.setInt(_energyKey, energy);
+  }
+
+  static Future<void> devReset() async {
+    final prefs = await SharedPreferences.getInstance();
+    for (final k in [_coinsKey, _xpKey, _levelKey, _hungerKey,
+                      _happinessKey, _energyKey, _streakKey, _totalDaysKey]) {
+      await prefs.remove(k);
+    }
+  }
+
   // ─── Test mode ───────────────────────────────────────────────
 
   static Future<bool> isTestMode() async {

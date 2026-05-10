@@ -14,8 +14,15 @@ class StatBar extends StatelessWidget {
     required this.color,
   });
 
+  Color get _barColor {
+    if (value < 15) return Colors.red[400]!;
+    if (value < 30) return Colors.orange[400]!;
+    return color;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final barColor = _barColor;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,10 +37,25 @@ class StatBar extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       color: Color(0xFFCC3366),
                       fontSize: 14)),
+              if (value < 15) ...[
+                const SizedBox(width: 6),
+                const Text('위험!',
+                    style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold)),
+              ] else if (value < 30) ...[
+                const SizedBox(width: 6),
+                const Text('부족',
+                    style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold)),
+              ],
             ]),
             Text('$value',
                 style: TextStyle(
-                    color: color,
+                    color: barColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 14)),
           ],
@@ -44,7 +66,7 @@ class StatBar extends StatelessWidget {
           child: LinearProgressIndicator(
             value: value / 100.0,
             backgroundColor: Colors.grey[200],
-            color: color,
+            color: barColor,
             minHeight: 13,
           ),
         ),

@@ -123,6 +123,7 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     final ok = await StorageService.buyItem(item.cost, item.effects);
     if (ok) {
       await _load();
+      widget.onCustomizationChanged?.call();
       _snack('${item.emoji} ${item.name} 구매 완료!');
     }
   }

@@ -67,8 +67,9 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     _accessoryAsset = StorageService.accessoryAsset(custom['accessory'] as String);
     _characterColor = StorageService.characterColor(custom['color'] as String);
 
-    if (_hasPermission || await UsageService.hasPermission()) {
-      _hasPermission = true;
+    final isTestMode = await StorageService.isTestMode();
+    if (isTestMode || _hasPermission || await UsageService.hasPermission()) {
+      if (!isTestMode) _hasPermission = true;
       _usageMinutes = await UsageService.getInstagramUsageMinutes();
       final prevLevel = _data['level'] as int? ?? 1;
       final reward = await StorageService.checkDailyReward(

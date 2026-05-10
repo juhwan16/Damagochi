@@ -15,6 +15,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _index = 0;
   String _themeId = 'default';
+  int _customVersion = 0;
 
   @override
   void initState() {
@@ -24,7 +25,12 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _loadTheme() async {
     final custom = await StorageService.loadCustomization();
-    if (mounted) setState(() => _themeId = custom['theme'] as String);
+    if (mounted) {
+      setState(() {
+        _themeId = custom['theme'] as String;
+        _customVersion++;
+      });
+    }
   }
 
   static const _labels = ['메인', '키우기', '상점', '순위'];
@@ -55,8 +61,8 @@ class _MainScreenState extends State<MainScreen> {
               child: IndexedStack(
                 index: _index,
                 children: [
-                  const HomeTab(),
-                  const CareTab(),
+                  HomeTab(customVersion: _customVersion),
+                  CareTab(customVersion: _customVersion),
                   ShopTab(onCustomizationChanged: _loadTheme),
                   const RankingTab(),
                 ],
@@ -70,11 +76,14 @@ class _MainScreenState extends State<MainScreen> {
         onDestinationSelected: (i) => setState(() => _index = i),
         backgroundColor: Colors.white,
         indicatorColor: const Color(0xFFFFD0E8),
-        destinations: List.generate(4, (i) => NavigationDestination(
-          icon: Icon(_icons[i]),
-          label: _labels[i],
-          selectedIcon: Icon(_icons[i], color: const Color(0xFFCC3366)),
-        )),
+        destinations: List.generate(
+          4,
+          (i) => NavigationDestination(
+            icon: Icon(_icons[i]),
+            label: _labels[i],
+            selectedIcon: Icon(_icons[i], color: const Color(0xFFCC3366)),
+          ),
+        ),
       ),
     );
   }
@@ -87,7 +96,9 @@ class _MainScreenState extends State<MainScreen> {
         alignment: Alignment.centerLeft,
         child: Text(titles[_index],
             style: const TextStyle(
-                fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFFCC3366))),
       ),
     );
   }

@@ -9,7 +9,8 @@ import 'settings_screen.dart';
 import 'level_up_dialog.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
+  final int customVersion;
+  const HomeTab({super.key, this.customVersion = 0});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -44,6 +45,14 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
 
     _init();
     _timer = Timer.periodic(const Duration(minutes: 5), (_) => _refresh());
+  }
+
+  @override
+  void didUpdateWidget(HomeTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.customVersion != widget.customVersion) {
+      _refresh();
+    }
   }
 
   Future<void> _init() async {

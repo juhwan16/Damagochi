@@ -8,7 +8,8 @@ import 'usage_service.dart';
 import 'level_up_dialog.dart';
 
 class CareTab extends StatefulWidget {
-  const CareTab({super.key});
+  final int customVersion;
+  const CareTab({super.key, this.customVersion = 0});
 
   @override
   State<CareTab> createState() => _CareTabState();
@@ -41,6 +42,14 @@ class _CareTabState extends State<CareTab> {
         }
       });
     });
+  }
+
+  @override
+  void didUpdateWidget(CareTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.customVersion != widget.customVersion) {
+      _refresh();
+    }
   }
 
   @override

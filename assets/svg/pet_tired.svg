@@ -1,64 +1,81 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <defs>
-    <radialGradient id="bodyT" cx="36%" cy="30%" r="68%">
+    <radialGradient id="bodyT" cx="35%" cy="28%" r="70%">
       <stop offset="0%" stop-color="#EED8E8"/>
-      <stop offset="100%" stop-color="#D4A8BC"/>
+      <stop offset="100%" stop-color="#D0A8BC"/>
     </radialGradient>
   </defs>
 
   <!-- Shadow -->
-  <ellipse cx="100" cy="191" rx="48" ry="7" fill="#C090A8" opacity="0.13"/>
+  <ellipse cx="100" cy="193" rx="50" ry="7" fill="#C090A8" opacity="0.13"/>
 
-  <!-- Ears -->
-  <ellipse cx="62" cy="54" rx="22" ry="26" fill="#CCA8BC"/>
-  <ellipse cx="62" cy="58" rx="12" ry="16" fill="#EED8EC"/>
-  <ellipse cx="138" cy="54" rx="22" ry="26" fill="#CCA8BC"/>
-  <ellipse cx="138" cy="58" rx="12" ry="16" fill="#EED8EC"/>
+  <!-- Left ear (slightly drooped) -->
+  <polygon points="46,90 88,86 66,20" fill="#CCA8BC"/>
+  <polygon points="56,82 80,80 66,36" fill="#EED8EC"/>
+  <!-- Right ear -->
+  <polygon points="154,90 112,86 134,20" fill="#CCA8BC"/>
+  <polygon points="144,82 120,80 134,36" fill="#EED8EC"/>
 
   <!-- Body -->
-  <ellipse cx="100" cy="122" rx="72" ry="70" fill="url(#bodyT)"/>
-  <ellipse cx="100" cy="122" rx="72" ry="70" fill="none" stroke="#C0A0B0" stroke-width="2.5"/>
-  <!-- Dim body shine -->
-  <ellipse cx="75" cy="97" rx="24" ry="15" fill="white" opacity="0.13" transform="rotate(-20 75 97)"/>
+  <circle cx="100" cy="122" r="70" fill="url(#bodyT)"/>
+  <circle cx="100" cy="122" r="70" fill="none" stroke="#C0A0B0" stroke-width="2.5"/>
+  <ellipse cx="74" cy="97" rx="24" ry="14" fill="white" opacity="0.13" transform="rotate(-20 74 97)"/>
 
-  <!-- Arms drooping -->
-  <ellipse cx="21" cy="135" rx="17" ry="13" fill="#D8B4C8" stroke="#C0A0B0" stroke-width="2"/>
-  <ellipse cx="179" cy="135" rx="17" ry="13" fill="#D8B4C8" stroke="#C0A0B0" stroke-width="2"/>
+  <!-- Paws drooping -->
+  <ellipse cx="30" cy="158" rx="22" ry="13" fill="#D8B4C8" stroke="#C0A0B0" stroke-width="2"/>
+  <ellipse cx="170" cy="158" rx="22" ry="13" fill="#D8B4C8" stroke="#C0A0B0" stroke-width="2"/>
+
+  <!-- Collar -->
+  <path d="M 50 162 Q 100 176 150 162" stroke="#A08898" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="100" cy="173" rx="8" ry="7" fill="#C8B890" stroke="#A89870" stroke-width="1.5"/>
+  <circle cx="100" cy="173" r="2.5" fill="#A89870"/>
 
   <!-- Eye whites -->
-  <ellipse cx="78" cy="107" rx="19" ry="21" fill="white"/>
-  <ellipse cx="122" cy="107" rx="19" ry="21" fill="white"/>
+  <ellipse cx="78" cy="107" rx="18" ry="20" fill="white"/>
+  <ellipse cx="122" cy="107" rx="18" ry="20" fill="white"/>
 
-  <!-- Pupils shifted down -->
-  <circle cx="78" cy="114" r="12" fill="#2A1000"/>
-  <circle cx="122" cy="114" r="12" fill="#2A1000"/>
+  <!-- Pupils (shifted down — droopy) -->
+  <circle cx="78" cy="115" r="12" fill="#2A1000"/>
+  <circle cx="122" cy="115" r="12" fill="#2A1000"/>
+  <circle cx="73" cy="111" r="4" fill="white" opacity="0.7"/>
+  <circle cx="117" cy="111" r="4" fill="white" opacity="0.7"/>
 
-  <!-- Dim highlights -->
-  <circle cx="73" cy="110" r="4" fill="white" opacity="0.7"/>
-  <circle cx="117" cy="110" r="4" fill="white" opacity="0.7"/>
+  <!-- Eyelid overlay (half-closes eyes) -->
+  <ellipse cx="78" cy="97" rx="20" ry="14" fill="#D8B4C8"/>
+  <ellipse cx="122" cy="97" rx="20" ry="14" fill="#D8B4C8"/>
+  <!-- Eyelid curve -->
+  <path d="M 58 97 Q 78 110 98 97" stroke="#B89AB0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 102 97 Q 122 110 142 97" stroke="#B89AB0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
-  <!-- Eyelid overlay (half-closes the eye) -->
-  <ellipse cx="78" cy="97" rx="21" ry="15" fill="#D8B8C8"/>
-  <ellipse cx="122" cy="97" rx="21" ry="15" fill="#D8B8C8"/>
-  <!-- Eyelid bottom edge line -->
-  <path d="M 57 97 Q 78 109 99 97" stroke="#B89AB0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <path d="M 101 97 Q 122 109 143 97" stroke="#B89AB0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Muzzle -->
+  <ellipse cx="89" cy="124" rx="14" ry="10" fill="white" opacity="0.55"/>
+  <ellipse cx="111" cy="124" rx="14" ry="10" fill="white" opacity="0.55"/>
 
-  <!-- Nose -->
-  <circle cx="100" cy="122" r="3.5" fill="#B890A8"/>
-
-  <!-- Faint blush -->
-  <ellipse cx="57" cy="131" rx="18" ry="11" fill="#C090A8" opacity="0.22"/>
-  <ellipse cx="143" cy="131" rx="18" ry="11" fill="#C090A8" opacity="0.22"/>
+  <!-- Cat nose -->
+  <path d="M 96 118 L 104 118 L 100 125 Z" fill="#B090A0"/>
 
   <!-- Tired flat mouth -->
-  <path d="M 87 139 Q 100 135 113 139" stroke="#8B5070" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <line x1="100" y1="125" x2="100" y2="129" stroke="#8B5070" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 89 135 Q 94 132 100 129 Q 106 132 111 135" stroke="#8B5070" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Whiskers left -->
+  <line x1="46" y1="116" x2="83" y2="121" stroke="#A888A0" stroke-width="1.5" opacity="0.5"/>
+  <line x1="46" y1="124" x2="83" y2="124" stroke="#A888A0" stroke-width="1.5" opacity="0.5"/>
+  <line x1="46" y1="132" x2="83" y2="127" stroke="#A888A0" stroke-width="1.5" opacity="0.5"/>
+  <!-- Whiskers right -->
+  <line x1="117" y1="121" x2="154" y2="116" stroke="#A888A0" stroke-width="1.5" opacity="0.5"/>
+  <line x1="117" y1="124" x2="154" y2="124" stroke="#A888A0" stroke-width="1.5" opacity="0.5"/>
+  <line x1="117" y1="127" x2="154" y2="132" stroke="#A888A0" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Faint blush -->
+  <ellipse cx="56" cy="130" rx="15" ry="9" fill="#C090A8" opacity="0.22"/>
+  <ellipse cx="144" cy="130" rx="15" ry="9" fill="#C090A8" opacity="0.22"/>
 
   <!-- Sweat drop -->
-  <path d="M 148 74 C 143 66 141 79 148 85 C 155 79 153 66 148 74 Z" fill="#B8DCF0"/>
+  <path d="M 150 76 C 145 68 143 82 150 88 C 157 82 155 68 150 76 Z" fill="#B8DCF0"/>
 
   <!-- ZZZ -->
-  <path d="M 154 58 L 163 58 L 154 68 L 163 68" stroke="#A8CDE0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 162 42 L 174 42 L 162 55 L 174 55" stroke="#A8CDE0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 172 24 L 187 24 L 172 40 L 187 40" stroke="#A8CDE0" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 156 60 L 165 60 L 156 70 L 165 70" stroke="#A8CDE0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 163 43 L 175 43 L 163 56 L 175 56" stroke="#A8CDE0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 172 24 L 187 24 L 172 41 L 187 41" stroke="#A8CDE0" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

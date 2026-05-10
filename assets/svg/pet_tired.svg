@@ -1,45 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <!-- Shadow -->
-  <ellipse cx="100" cy="188" rx="46" ry="7" fill="#AA8899" opacity="0.18"/>
+  <ellipse cx="100" cy="192" rx="50" ry="8" fill="#1A1A10" opacity="0.2"/>
 
-  <!-- Body (slightly muted) -->
-  <ellipse cx="100" cy="114" rx="68" ry="72" fill="#E8C0D4"/>
-  <ellipse cx="100" cy="114" rx="68" ry="72" fill="none" stroke="#D0A8BC" stroke-width="3"/>
+  <!-- Body (plate carrier, slightly desaturated) -->
+  <ellipse cx="100" cy="138" rx="66" ry="58" fill="#727060"/>
+  <ellipse cx="100" cy="138" rx="66" ry="58" fill="none" stroke="#545248" stroke-width="2.5"/>
+  <!-- Front plate panel -->
+  <rect x="68" y="108" width="64" height="58" rx="10" fill="#626150"/>
+  <!-- MOLLE webbing lines -->
+  <line x1="70" y1="120" x2="130" y2="120" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
+  <line x1="70" y1="130" x2="130" y2="130" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
+  <line x1="70" y1="140" x2="130" y2="140" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
+  <line x1="70" y1="150" x2="130" y2="150" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
+  <!-- Admin pouch -->
+  <rect x="80" y="154" width="40" height="12" rx="5" fill="#58523E"/>
 
-  <!-- Body shine -->
-  <ellipse cx="76" cy="84" rx="20" ry="13" fill="white" opacity="0.18" transform="rotate(-18 76 84)"/>
+  <!-- Arms (slightly drooped) -->
+  <ellipse cx="26" cy="134" rx="20" ry="13" fill="#727060" stroke="#545248" stroke-width="2"/>
+  <ellipse cx="174" cy="134" rx="20" ry="13" fill="#727060" stroke="#545248" stroke-width="2"/>
 
-  <!-- Left eye (half closed) -->
-  <circle cx="78" cy="106" r="16" fill="white"/>
-  <circle cx="79" cy="112" r="10" fill="#1A0800"/>
-  <circle cx="74" cy="109" r="3.5" fill="white" opacity="0.7"/>
-  <!-- Eyelid -->
-  <ellipse cx="78" cy="97" rx="18" ry="12" fill="#E8C0D4"/>
-  <path d="M 60 97 Q 78 108 96 97" stroke="#C0A0B0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Neck / balaclava -->
+  <ellipse cx="100" cy="108" rx="34" ry="16" fill="#1E1E1E"/>
 
-  <!-- Right eye (half closed) -->
-  <circle cx="122" cy="106" r="16" fill="white"/>
-  <circle cx="123" cy="112" r="10" fill="#1A0800"/>
-  <circle cx="118" cy="109" r="3.5" fill="white" opacity="0.7"/>
-  <!-- Eyelid -->
-  <ellipse cx="122" cy="97" rx="18" ry="12" fill="#E8C0D4"/>
-  <path d="M 104 97 Q 122 108 140 97" stroke="#C0A0B0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Helmet (FAST-style) -->
+  <ellipse cx="100" cy="60" rx="62" ry="54" fill="#242424"/>
+  <!-- Helmet lower brim -->
+  <rect x="40" y="98" width="120" height="12" rx="5" fill="#1A1A1A"/>
 
-  <!-- Blush (faint) -->
-  <ellipse cx="60" cy="122" rx="13" ry="8" fill="#BB8899" opacity="0.2"/>
-  <ellipse cx="140" cy="122" rx="13" ry="8" fill="#BB8899" opacity="0.2"/>
+  <!-- Goggle bridge -->
+  <rect x="88" y="82" width="24" height="10" rx="5" fill="#141414"/>
 
-  <!-- Nose -->
-  <circle cx="100" cy="120" r="3" fill="#C090A8"/>
+  <!-- Left goggle -->
+  <circle cx="74" cy="87" r="19" fill="#141414"/>
+  <circle cx="74" cy="87" r="14" fill="#B88C14"/>
+  <circle cx="75" cy="91" r="7" fill="#7A5C0A"/>
+  <circle cx="67" cy="82" r="4" fill="white" opacity="0.25"/>
+  <!-- Half-closed eyelid overlay (matches helmet color) -->
+  <ellipse cx="74" cy="69" rx="21" ry="13" fill="#242424"/>
+
+  <!-- Right goggle -->
+  <circle cx="126" cy="87" r="19" fill="#141414"/>
+  <circle cx="126" cy="87" r="14" fill="#B88C14"/>
+  <circle cx="127" cy="91" r="7" fill="#7A5C0A"/>
+  <circle cx="119" cy="82" r="4" fill="white" opacity="0.25"/>
+  <!-- Half-closed eyelid overlay -->
+  <ellipse cx="126" cy="69" rx="21" ry="13" fill="#242424"/>
+
+  <!-- NVG mount on helmet -->
+  <rect x="88" y="16" width="24" height="14" rx="5" fill="#1A1A1A"/>
+  <rect x="94" y="13" width="12" height="7" rx="3" fill="#141414"/>
 
   <!-- Flat tired mouth -->
-  <path d="M 88 132 Q 100 128 112 132" stroke="#996677" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 89 115 Q 100 113 111 115" stroke="#6A4A28" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
   <!-- Sweat drop -->
-  <path d="M 148 74 C 143 66 141 80 148 86 C 155 80 153 66 148 74 Z" fill="#AAD8F0"/>
+  <path d="M 152 48 C 147 40 145 54 152 60 C 159 54 157 40 152 48 Z" fill="#AAD8F0"/>
 
   <!-- ZZZ -->
-  <path d="M 154 60 L 163 60 L 154 70 L 163 70" stroke="#99C8E0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 162 43 L 174 43 L 162 56 L 174 56" stroke="#99C8E0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 172 24 L 186 24 L 172 40 L 186 40" stroke="#99C8E0" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 154 68 L 163 68 L 154 78 L 163 78" stroke="#99C8E0" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 162 50 L 174 50 L 162 63 L 174 63" stroke="#99C8E0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 172 28 L 186 28 L 172 44 L 186 44" stroke="#99C8E0" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

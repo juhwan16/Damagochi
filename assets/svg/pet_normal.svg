@@ -1,51 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <!-- Shadow -->
-  <ellipse cx="100" cy="192" rx="50" ry="8" fill="#1A1A10" opacity="0.25"/>
+  <ellipse cx="100" cy="192" rx="52" ry="8" fill="#806000" opacity="0.22"/>
 
-  <!-- Body (plate carrier, coyote tan) -->
-  <ellipse cx="100" cy="138" rx="66" ry="58" fill="#7A7260"/>
-  <ellipse cx="100" cy="138" rx="66" ry="58" fill="none" stroke="#5C5648" stroke-width="2.5"/>
-  <!-- Front plate panel -->
-  <rect x="68" y="108" width="64" height="58" rx="10" fill="#6A6352"/>
-  <!-- MOLLE webbing lines -->
-  <line x1="70" y1="120" x2="130" y2="120" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
-  <line x1="70" y1="130" x2="130" y2="130" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
-  <line x1="70" y1="140" x2="130" y2="140" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
-  <line x1="70" y1="150" x2="130" y2="150" stroke="#4C4840" stroke-width="2" opacity="0.65"/>
+  <!-- Wings (behind body) -->
+  <ellipse cx="22" cy="152" rx="19" ry="26" fill="#FFDF00" stroke="#C8A800" stroke-width="2" transform="rotate(12 22 152)"/>
+  <ellipse cx="178" cy="152" rx="19" ry="26" fill="#FFDF00" stroke="#C8A800" stroke-width="2" transform="rotate(-12 178 152)"/>
+
+  <!-- Main duck body (yellow rubber duck) -->
+  <ellipse cx="100" cy="120" rx="70" ry="74" fill="#FFDF00"/>
+  <ellipse cx="100" cy="120" rx="70" ry="74" fill="none" stroke="#C8A800" stroke-width="2.5"/>
+
+  <!-- Body shine -->
+  <ellipse cx="72" cy="84" rx="22" ry="14" fill="white" opacity="0.22" transform="rotate(-18 72 84)"/>
+
+  <!-- Tactical plate carrier (lower body) -->
+  <rect x="30" y="148" width="140" height="44" rx="14" fill="#2C2A26"/>
+  <rect x="68" y="152" width="64" height="40" rx="10" fill="#1E1C18"/>
+  <!-- MOLLE webbing -->
+  <line x1="70" y1="163" x2="130" y2="163" stroke="#3A3830" stroke-width="2" opacity="0.9"/>
+  <line x1="70" y1="173" x2="130" y2="173" stroke="#3A3830" stroke-width="2" opacity="0.9"/>
+  <line x1="70" y1="183" x2="130" y2="183" stroke="#3A3830" stroke-width="2" opacity="0.9"/>
   <!-- Admin pouch -->
-  <rect x="80" y="154" width="40" height="12" rx="5" fill="#58523E"/>
+  <rect x="82" y="186" width="36" height="10" rx="4" fill="#28261E"/>
 
-  <!-- Arms -->
-  <ellipse cx="26" cy="132" rx="20" ry="13" fill="#7A7260" stroke="#5C5648" stroke-width="2"/>
-  <ellipse cx="174" cy="132" rx="20" ry="13" fill="#7A7260" stroke="#5C5648" stroke-width="2"/>
+  <!-- Tactical helmet (FAST-style) -->
+  <ellipse cx="100" cy="50" rx="62" ry="50" fill="#242424"/>
+  <!-- Goggle strap on helmet -->
+  <rect x="44" y="76" width="112" height="18" rx="9" fill="#1A1A1A"/>
+  <!-- Left goggle lens -->
+  <ellipse cx="76" cy="85" rx="20" ry="11" fill="#141414"/>
+  <ellipse cx="76" cy="85" rx="15" ry="8" fill="#B88C14"/>
+  <ellipse cx="69" cy="81" rx="5" ry="3" fill="white" opacity="0.3"/>
+  <!-- Right goggle lens -->
+  <ellipse cx="124" cy="85" rx="20" ry="11" fill="#141414"/>
+  <ellipse cx="124" cy="85" rx="15" ry="8" fill="#B88C14"/>
+  <ellipse cx="117" cy="81" rx="5" ry="3" fill="white" opacity="0.3"/>
+  <!-- Helmet brim -->
+  <rect x="38" y="90" width="124" height="11" rx="5" fill="#1A1A1A"/>
+  <!-- NVG mount -->
+  <rect x="88" y="14" width="24" height="14" rx="5" fill="#1A1A1A"/>
+  <rect x="94" y="11" width="12" height="7" rx="3" fill="#141414"/>
 
-  <!-- Neck / balaclava -->
-  <ellipse cx="100" cy="108" rx="34" ry="16" fill="#1E1E1E"/>
+  <!-- Duck eyes -->
+  <circle cx="76" cy="112" r="20" fill="white"/>
+  <circle cx="79" cy="115" r="12" fill="#1A0800"/>
+  <circle cx="70" cy="106" r="5" fill="white" opacity="0.85"/>
+  <circle cx="124" cy="112" r="20" fill="white"/>
+  <circle cx="127" cy="115" r="12" fill="#1A0800"/>
+  <circle cx="118" cy="106" r="5" fill="white" opacity="0.85"/>
 
-  <!-- Helmet (FAST-style) -->
-  <ellipse cx="100" cy="60" rx="62" ry="54" fill="#242424"/>
-  <!-- Helmet lower brim -->
-  <rect x="40" y="98" width="120" height="12" rx="5" fill="#1A1A1A"/>
-
-  <!-- Goggle bridge -->
-  <rect x="88" y="82" width="24" height="10" rx="5" fill="#141414"/>
-
-  <!-- Left goggle -->
-  <circle cx="74" cy="87" r="19" fill="#141414"/>
-  <circle cx="74" cy="87" r="14" fill="#B88C14"/>
-  <circle cx="75" cy="89" r="7" fill="#7A5C0A"/>
-  <circle cx="67" cy="80" r="4.5" fill="white" opacity="0.3"/>
-
-  <!-- Right goggle -->
-  <circle cx="126" cy="87" r="19" fill="#141414"/>
-  <circle cx="126" cy="87" r="14" fill="#B88C14"/>
-  <circle cx="127" cy="89" r="7" fill="#7A5C0A"/>
-  <circle cx="119" cy="80" r="4.5" fill="white" opacity="0.3"/>
-
-  <!-- NVG mount on helmet -->
-  <rect x="88" y="16" width="24" height="14" rx="5" fill="#1A1A1A"/>
-  <rect x="94" y="13" width="12" height="7" rx="3" fill="#141414"/>
-
-  <!-- Mouth (small, peeking below brim) -->
-  <path d="M 89 113 Q 100 121 111 113" stroke="#7A5A30" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Orange beak -->
+  <ellipse cx="100" cy="136" rx="18" ry="11" fill="#FF8800"/>
+  <path d="M 84 136 Q 100 132 116 136" stroke="#C06000" stroke-width="1.5" fill="none"/>
 </svg>

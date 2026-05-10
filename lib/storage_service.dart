@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
+  // Pet stats
   static const _goalKey = 'goal_minutes';
   static const _levelKey = 'pet_level';
   static const _xpKey = 'pet_xp';
@@ -13,10 +15,23 @@ class StorageService {
   static const _streakKey = 'current_streak';
   static const _totalDaysKey = 'total_goal_days';
 
+  // Customization
+  static const _equippedAccKey = 'equipped_accessory';
+  static const _equippedThemeKey = 'equipped_theme';
+  static const _equippedColorKey = 'equipped_color';
+  static const _unlockedAccKey = 'unlocked_accessories';
+  static const _unlockedThemesKey = 'unlocked_themes';
+  static const _unlockedColorsKey = 'unlocked_colors';
+
+  // Test mode
+  static const _testModeKey = 'test_mode';
+  static const _testUsageKey = 'test_usage_minutes';
+
+  // ─── Pet stats ───────────────────────────────────────────────
+
   static Future<Map<String, dynamic>> loadAll() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Time-based stat decay
     final lastUpdate =
         prefs.getInt(_lastUpdateKey) ?? DateTime.now().millisecondsSinceEpoch;
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -54,11 +69,9 @@ class StorageService {
     await prefs.setInt(_goalKey, minutes);
   }
 
-  // Care actions
   static Future<void> feed() async {
     final prefs = await SharedPreferences.getInstance();
-    final v = (prefs.getInt(_hungerKey) ?? 50) + 25;
-    await prefs.setInt(_hungerKey, v.clamp(0, 100));
+    await prefs.setInt(_hungerKey, ((prefs.getInt(_hungerKey) ?? 50) + 25).clamp(0, 100));
   }
 
   static Future<void> play() async {
@@ -80,12 +93,10 @@ class StorageService {
     await prefs.setInt(_energyKey, ((prefs.getInt(_energyKey) ?? 50) + 5).clamp(0, 100));
   }
 
-  // Shop purchase: apply stat effects and deduct coins
   static Future<bool> buyItem(int cost, Map<String, int> effects) async {
     final prefs = await SharedPreferences.getInstance();
     final coins = prefs.getInt(_coinsKey) ?? 0;
     if (coins < cost) return false;
-
     await prefs.setInt(_coinsKey, coins - cost);
     if (effects.containsKey('hunger')) {
       await prefs.setInt(_hungerKey, ((prefs.getInt(_hungerKey) ?? 50) + effects['hunger']!).clamp(0, 100));
@@ -99,7 +110,6 @@ class StorageService {
     return true;
   }
 
-  // Daily reward check
   static Future<({int level, int xp, int coins, int streak, int totalDays, bool rewarded})>
       checkDailyReward(int usageMinutes, int goalMinutes) async {
     final prefs = await SharedPreferences.getInstance();
@@ -121,12 +131,10 @@ class StorageService {
     coins += 15;
     streak++;
     totalDays++;
-
     while (xp >= level * 100) {
       xp -= level * 100;
       level++;
     }
-
     await prefs.setInt(_levelKey, level);
     await prefs.setInt(_xpKey, xp);
     await prefs.setInt(_coinsKey, coins);
@@ -134,5 +142,119 @@ class StorageService {
     await prefs.setInt(_totalDaysKey, totalDays);
 
     return (level: level, xp: xp, coins: coins, streak: streak, totalDays: totalDays, rewarded: true);
+  }
+
+  // ─── Customization ───────────────────────────────────────────
+
+  static Future<Map<String, dynamic>> loadCustomization() async {
+    final prefs = await SharedPreferences.getInstance();
+    final unlockedAcc = (prefs.getString(_unlockedAccKey) ?? '')
+        .split(',').where((s) => s.isNotEmpty).toList();
+    final unlockedThemes = (prefs.getString(_unlockedThemesKey) ?? 'default')
+        .split(',').where((s) => s.isNotEmpty).toList();
+    final unlockedColors = (prefs.getString(_unlockedColorsKey) ?? 'pink')
+        .split(',').where((s) => s.isNotEmpty).toList();
+
+    return {
+      'accessory': prefs.getString(_equippedAccKey) ?? 'none',
+      'theme': prefs.getString(_equippedThemeKey) ?? 'default',
+      'color': prefs.getString(_equippedColorKey) ?? 'pink',
+      'unlockedAcc': unlockedAcc,
+      'unlockedThemes': unlockedThemes,
+      'unlockedColors': unlockedColors,
+    };
+  }
+
+  static Future<void> equipAccessory(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_equippedAccKey, id);
+  }
+
+  static Future<void> equipTheme(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_equippedThemeKey, id);
+  }
+
+  static Future<void> equipColor(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_equippedColorKey, id);
+  }
+
+  static Future<bool> unlockCustomItem(String type, String id, int cost) async {
+    final prefs = await SharedPreferences.getInstance();
+    final coins = prefs.getInt(_coinsKey) ?? 0;
+    if (coins < cost) return false;
+    await prefs.setInt(_coinsKey, coins - cost);
+
+    final key = type == 'accessory'
+        ? _unlockedAccKey
+        : type == 'theme'
+            ? _unlockedThemesKey
+            : _unlockedColorsKey;
+    final current = prefs.getString(key) ?? '';
+    final items = current.split(',').where((s) => s.isNotEmpty).toList();
+    if (!items.contains(id)) {
+      items.add(id);
+      await prefs.setString(key, items.join(','));
+    }
+    return true;
+  }
+
+  // ─── Test mode ───────────────────────────────────────────────
+
+  static Future<bool> isTestMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_testModeKey) ?? false;
+  }
+
+  static Future<void> setTestMode(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_testModeKey, enabled);
+  }
+
+  static Future<int> getTestUsageMinutes() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_testUsageKey) ?? 0;
+  }
+
+  static Future<void> setTestUsageMinutes(int minutes) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_testUsageKey, minutes);
+  }
+
+  // ─── Utility ─────────────────────────────────────────────────
+
+  static String? accessoryAsset(String id) {
+    switch (id) {
+      case 'crown': return 'assets/svg/acc_crown.svg';
+      case 'ribbon': return 'assets/svg/acc_ribbon.svg';
+      case 'hat': return 'assets/svg/acc_hat.svg';
+      case 'glasses': return 'assets/svg/acc_glasses.svg';
+      case 'santa': return 'assets/svg/acc_santa.svg';
+      case 'halo': return 'assets/svg/acc_halo.svg';
+      default: return null;
+    }
+  }
+
+  static Color? characterColor(String id) {
+    switch (id) {
+      case 'mint': return const Color(0xFF80D0C0);
+      case 'yellow': return const Color(0xFFFFD080);
+      case 'sky': return const Color(0xFF80B8E0);
+      case 'lavender': return const Color(0xFFB880E0);
+      case 'peach': return const Color(0xFFFFB080);
+      default: return null;
+    }
+  }
+
+  static List<Color> themeColors(String id) {
+    switch (id) {
+      case 'sky': return [const Color(0xFFE3F2FD), const Color(0xFFBBDEFB), const Color(0xFFE1F5FE)];
+      case 'forest': return [const Color(0xFFE8F5E9), const Color(0xFFC8E6C9), const Color(0xFFDCEDC8)];
+      case 'sunset': return [const Color(0xFFFFF8E1), const Color(0xFFFFECB3), const Color(0xFFFFE0B2)];
+      case 'lavender': return [const Color(0xFFF3E5F5), const Color(0xFFE1BEE7), const Color(0xFFEDE7F6)];
+      case 'ocean': return [const Color(0xFFE0F7FA), const Color(0xFFB2EBF2), const Color(0xFFE0F2F1)];
+      default: return [const Color(0xFFFCE4EC), const Color(0xFFF8BBD9), const Color(0xFFEDD5F5)];
+    }
   }
 }

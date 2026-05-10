@@ -24,19 +24,20 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
   int _usageMinutes = 0;
   bool _hasPermission = false;
   bool _loading = true;
+  String? _accessoryAsset;
+  Color? _characterColor;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _floatController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))
-          ..repeat(reverse: true);
+    _floatController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2200))
+      ..repeat(reverse: true);
     _floatAnim = Tween<double>(begin: 0, end: -10).animate(
         CurvedAnimation(parent: _floatController, curve: Curves.easeInOut));
-
-    _shakeController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _shakeController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     _shakeAnim = Tween<double>(begin: -5, end: 5).animate(
         CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));
 
@@ -46,8 +47,18 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
 
   Future<void> _init() async {
     _hasPermission = await UsageService.hasPermission();
+    await _refresh();
+    if (mounted) setState(() => _loading = false);
+  }
+
+  Future<void> _refresh() async {
     _data = await StorageService.loadAll();
-    if (_hasPermission) {
+    final custom = await StorageService.loadCustomization();
+    _accessoryAsset = StorageService.accessoryAsset(custom['accessory'] as String);
+    _characterColor = StorageService.characterColor(custom['color'] as String);
+
+    if (_hasPermission || await UsageService.hasPermission()) {
+      _hasPermission = true;
       _usageMinutes = await UsageService.getInstagramUsageMinutes();
       final reward = await StorageService.checkDailyReward(
           _usageMinutes, _data['goalMinutes'] as int);
@@ -58,15 +69,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
         if (mounted) _showReward();
       }
     }
-    if (mounted) setState(() => _loading = false);
-    _updateAnimation();
-  }
 
-  Future<void> _refresh() async {
-    _data = await StorageService.loadAll();
-    if (_hasPermission) {
-      _usageMinutes = await UsageService.getInstagramUsageMinutes();
-    }
     if (mounted) {
       setState(() {});
       _updateAnimation();
@@ -130,7 +133,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
         const SizedBox(height: 16),
         _buildCharacter(pet),
         const SizedBox(height: 16),
-        _buildInfoCard(pet),
+        _buildStatsCard(pet),
         const SizedBox(height: 12),
         _buildUsageCard(pet),
         if (!_hasPermission) ...[
@@ -151,7 +154,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
                   fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
           const SizedBox(height: 4),
           SizedBox(
-            width: 160,
+            width: 150,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: LinearProgressIndicator(
@@ -176,7 +179,9 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
               const SizedBox(width: 4),
               Text('${pet.coins}',
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Color(0xFFCC3366), fontSize: 16)),
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFCC3366),
+                      fontSize: 16)),
             ]),
           ),
           IconButton(
@@ -197,20 +202,21 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
       animation: Listenable.merge([_floatAnim, _shakeAnim]),
       builder: (context, child) {
         final dx = pet.state == PetState.sick ? _shakeAnim.value : 0.0;
-        return Transform.translate(
-            offset: Offset(dx, _floatAnim.value), child: child);
+        return Transform.translate(offset: Offset(dx, _floatAnim.value), child: child);
       },
       child: Column(children: [
-        PetWidget(state: pet.state),
+        PetWidget(
+          state: pet.state,
+          accessoryAsset: _accessoryAsset,
+          characterColor: _characterColor,
+        ),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(5, (i) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
             child: Icon(
-              i < pet.healthHearts
-                  ? Icons.favorite_rounded
-                  : Icons.favorite_outline_rounded,
+              i < pet.healthHearts ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
               color: i < pet.healthHearts ? const Color(0xFFFF4488) : Colors.pink[200],
               size: 30,
             ),
@@ -230,7 +236,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildInfoCard(PetModel pet) {
+  Widget _buildStatsCard(PetModel pet) {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -280,18 +286,15 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
             minHeight: 12,
           ),
         ),
-        if (over)
-          const Padding(
-            padding: EdgeInsets.only(top: 6),
-            child: Text('⚠️ 목표 시간을 초과했어요!',
-                style: TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.w600)),
-          ),
-        if (!over && goal > 0)
-          Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: Text('✅ 남은 시간: ${goal - usage}분',
-                style: const TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.w600)),
-          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: over
+              ? const Text('⚠️ 목표 시간 초과!',
+                  style: TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.w600))
+              : Text('✅ 남은 시간: ${goal - usage}분',
+                  style: const TextStyle(
+                      color: Colors.green, fontSize: 12, fontWeight: FontWeight.w600)),
+        ),
       ]),
     );
   }
@@ -316,7 +319,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
             await UsageService.requestPermission();
             await Future.delayed(const Duration(seconds: 1));
             final ok = await UsageService.hasPermission();
-            setState(() => _hasPermission = ok);
+            if (mounted) setState(() => _hasPermission = ok);
             if (ok) _refresh();
           },
           child: const Text('권한 허용하기'),

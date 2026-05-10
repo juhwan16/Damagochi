@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'storage_service.dart';
 import 'home_tab.dart';
 import 'care_tab.dart';
 import 'shop_tab.dart';
@@ -13,13 +14,18 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _index = 0;
+  String _themeId = 'default';
 
-  static const _tabs = [
-    HomeTab(),
-    CareTab(),
-    ShopTab(),
-    RankingTab(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadTheme();
+  }
+
+  Future<void> _loadTheme() async {
+    final custom = await StorageService.loadCustomization();
+    if (mounted) setState(() => _themeId = custom['theme'] as String);
+  }
 
   static const _labels = ['메인', '키우기', '상점', '순위'];
   static const _icons = [
@@ -31,20 +37,30 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColors = StorageService.themeColors(_themeId);
+
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFFCE4EC), Color(0xFFF8BBD9), Color(0xFFEDD5F5)],
+            colors: themeColors,
           ),
         ),
         child: SafeArea(
           child: Column(children: [
             _buildAppBar(),
             Expanded(
-              child: IndexedStack(index: _index, children: _tabs),
+              child: IndexedStack(
+                index: _index,
+                children: [
+                  const HomeTab(),
+                  const CareTab(),
+                  ShopTab(onCustomizationChanged: _loadTheme),
+                  const RankingTab(),
+                ],
+              ),
             ),
           ]),
         ),
@@ -67,13 +83,12 @@ class _MainScreenState extends State<MainScreen> {
     final titles = ['다마고치 🌸', '키우기 💕', '상점 🛍️', '순위 🏆'];
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
-      child: Row(children: [
-        Text(
-          titles[_index],
-          style: const TextStyle(
-              fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFFCC3366)),
-        ),
-      ]),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(titles[_index],
+            style: const TextStyle(
+                fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
+      ),
     );
   }
 }

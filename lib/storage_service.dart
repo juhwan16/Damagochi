@@ -91,12 +91,16 @@ class StorageService {
     final now = DateTime.now().millisecondsSinceEpoch;
     final hours = (now - lastUpdate) / 3600000.0;
 
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final lastDate = prefs.getString(_lastDateKey) ?? '';
+    final decayMult = lastDate == today ? 0.5 : 1.0;
+
     int hunger =
-        ((prefs.getInt(_hungerKey) ?? 80) - hours * 2.5).round().clamp(0, 100);
+        ((prefs.getInt(_hungerKey) ?? 80) - hours * 2.5 * decayMult).round().clamp(0, 100);
     int happiness =
-        ((prefs.getInt(_happinessKey) ?? 80) - hours * 2.0).round().clamp(0, 100);
+        ((prefs.getInt(_happinessKey) ?? 80) - hours * 2.0 * decayMult).round().clamp(0, 100);
     int energy =
-        ((prefs.getInt(_energyKey) ?? 80) - hours * 1.5).round().clamp(0, 100);
+        ((prefs.getInt(_energyKey) ?? 80) - hours * 1.5 * decayMult).round().clamp(0, 100);
 
     await prefs.setInt(_hungerKey, hunger);
     await prefs.setInt(_happinessKey, happiness);
@@ -132,7 +136,7 @@ class StorageService {
 
   static Future<int> getCooldownRemaining(String action) async {
     final prefs = await SharedPreferences.getInstance();
-    const cooldownHours = {'feed': 2, 'play': 1, 'sleep': 4, 'clean': 3};
+    const cooldownHours = {'feed': 2, 'play': 1, 'sleep': 4, 'clean': 3, 'special_snack': 12, 'spa': 24};
     final hours = cooldownHours[action] ?? 1;
     final lastTime = prefs.getInt('${_p}last_${action}_time') ?? 0;
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -229,6 +233,22 @@ class StorageService {
         statDeltas: {'happiness': 10, 'energy': 5},
         xpGain: 3,
         coinGain: 1,
+      );
+
+  static Future<CareResult> specialSnack() => _doCare(
+        key: 'special_snack',
+        cooldownHours: 12,
+        statDeltas: {'hunger': 50, 'happiness': 20},
+        xpGain: 10,
+        coinGain: 3,
+      );
+
+  static Future<CareResult> spa() => _doCare(
+        key: 'spa',
+        cooldownHours: 24,
+        statDeltas: {'happiness': 50, 'energy': 30, 'hunger': 10},
+        xpGain: 15,
+        coinGain: 5,
       );
 
   static Future<bool> buyItem(int cost, Map<String, int> effects) async {

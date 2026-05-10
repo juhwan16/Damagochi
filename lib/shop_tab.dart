@@ -15,7 +15,8 @@ class _Item {
 class _AccItem {
   final String id, emoji, name;
   final int cost;
-  const _AccItem(this.id, this.emoji, this.name, this.cost);
+  final int minLevel;
+  const _AccItem(this.id, this.emoji, this.name, this.cost, {this.minLevel = 1});
 }
 
 class _ThemeItem {
@@ -51,12 +52,12 @@ const _items = [
 ];
 
 const _accessories = [
-  _AccItem('crown', '👑', '왕관', 120),
-  _AccItem('ribbon', '🎀', '리본', 60),
-  _AccItem('hat', '⭐', '별모자', 80),
-  _AccItem('glasses', '👓', '안경', 70),
-  _AccItem('santa', '🎅', '산타모자', 90),
-  _AccItem('halo', '😇', '천사링', 150),
+  _AccItem('ribbon', '🎀', '리본', 60, minLevel: 1),
+  _AccItem('glasses', '👓', '안경', 70, minLevel: 3),
+  _AccItem('hat', '⭐', '별모자', 80, minLevel: 5),
+  _AccItem('santa', '🎅', '산타모자', 90, minLevel: 7),
+  _AccItem('crown', '👑', '왕관', 120, minLevel: 10),
+  _AccItem('halo', '😇', '천사링', 150, minLevel: 15),
 ];
 
 final _themes = [
@@ -90,6 +91,7 @@ class ShopTab extends StatefulWidget {
 class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _coins = 0;
+  int _currentLevel = 1;
   Map<String, dynamic> _custom = {};
 
   @override
@@ -110,6 +112,7 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     final custom = await StorageService.loadCustomization();
     if (mounted) setState(() {
       _coins = data['coins'] as int;
+      _currentLevel = data['level'] as int;
       _custom = custom;
     });
   }
@@ -451,6 +454,27 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
           isOwned: true,
         ),
         ..._accessories.map((acc) {
+          final isLevelLocked = _currentLevel < acc.minLevel;
+          if (isLevelLocked) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey[300]!, width: 1.5),
+              ),
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text(acc.emoji, style: TextStyle(fontSize: 30, color: Colors.grey[400])),
+                const SizedBox(height: 4),
+                Text(acc.name, style: TextStyle(fontSize: 11, color: Colors.grey[400], fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(Icons.lock_rounded, size: 12, color: Colors.grey[400]),
+                  const SizedBox(width: 2),
+                  Text('Lv.${acc.minLevel}', style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.bold)),
+                ]),
+              ]),
+            );
+          }
           final isOwned = unlocked.contains(acc.id);
           final isEquipped = equipped == acc.id;
           return _customCard(

@@ -19,6 +19,7 @@ class _CareTabState extends State<CareTab> {
   Map<String, dynamic> _data = {};
   int _usageMinutes = 0;
   bool _loading = true;
+  int _currentLevel = 1;
   String? _accessoryAsset;
   Color? _characterColor;
 
@@ -27,6 +28,8 @@ class _CareTabState extends State<CareTab> {
     'play': 0,
     'sleep': 0,
     'clean': 0,
+    'special_snack': 0,
+    'spa': 0,
   };
   Timer? _cooldownTimer;
 
@@ -67,13 +70,14 @@ class _CareTabState extends State<CareTab> {
         StorageService.characterColor(custom['color'] as String);
 
     final feeds = <String, int>{};
-    for (final action in ['feed', 'play', 'sleep', 'clean']) {
+    for (final action in ['feed', 'play', 'sleep', 'clean', 'special_snack', 'spa']) {
       feeds[action] = await StorageService.getCooldownRemaining(action);
     }
 
     if (mounted) {
       setState(() {
         _loading = false;
+        _currentLevel = _data['level'] ?? 1;
         _cooldowns = feeds;
       });
     }
@@ -264,6 +268,10 @@ class _CareTabState extends State<CareTab> {
           [const Color(0xFFDCEEFF), const Color(0xFFB0D4F8)], StorageService.sleep),
       _Action('🛁', '씻기기', '행복 +10 · +3XP', 'clean', '🛁 깨끗해졌어요!',
           [const Color(0xFFDCF5DC), const Color(0xFFB0E0B0)], StorageService.clean),
+      _Action('🍰', '특별 간식', '배고픔 +50\n행복 +20 · +10XP', 'special_snack', '🍰 특별 간식을 먹었어요!',
+          [const Color(0xFFFFE0B2), const Color(0xFFFFCC80)], StorageService.specialSnack, requiredLevel: 5),
+      _Action('🧖', '스파', '행복 +50\n에너지 +30 · +15XP', 'spa', '🧖 스파를 즐겼어요!',
+          [const Color(0xFFE0F7FA), const Color(0xFFB2EBF2)], StorageService.spa, requiredLevel: 10),
     ];
 
     return GridView.count(
@@ -276,6 +284,29 @@ class _CareTabState extends State<CareTab> {
       children: actions.map((a) {
         final cd = _cooldowns[a.key] ?? 0;
         final onCooldown = cd > 0;
+        final isLocked = _currentLevel < a.requiredLevel;
+
+        if (isLocked) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: Colors.grey[200]!, width: 1.5),
+            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(a.emoji, style: const TextStyle(fontSize: 36, color: Color(0x44000000))),
+              const SizedBox(height: 5),
+              Text(a.label, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey[400])),
+              const SizedBox(height: 4),
+              Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.lock_rounded, size: 12, color: Colors.grey[400]),
+                const SizedBox(width: 3),
+                Text('Lv.${a.requiredLevel} 해금', style: TextStyle(fontSize: 11, color: Colors.grey[400])),
+              ]),
+            ]),
+          );
+        }
+
         return GestureDetector(
           onTap: () => _handleCare(a.key, a.action, a.successMsg),
           child: AnimatedContainer(
@@ -337,6 +368,7 @@ class _CareTabState extends State<CareTab> {
                           ],
                         )
                       : Text(a.sub,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 11, color: Colors.black45)),
                 ]),
@@ -351,6 +383,7 @@ class _Action {
   final String emoji, label, sub, key, successMsg;
   final List<Color> gradient;
   final Future<CareResult> Function() action;
+  final int requiredLevel;
   const _Action(this.emoji, this.label, this.sub, this.key, this.successMsg,
-      this.gradient, this.action);
+      this.gradient, this.action, {this.requiredLevel = 1});
 }

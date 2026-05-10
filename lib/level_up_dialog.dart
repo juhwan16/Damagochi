@@ -39,6 +39,17 @@ class _LevelUpDialogState extends State<LevelUpDialog>
     return '👑 마스터';
   }
 
+  String? _unlockMessage(int level) {
+    switch (level) {
+      case 3: return '👓 안경 악세서리 해금!';
+      case 5: return '⭐ 별모자 해금!\n🍰 특별 간식 케어 해금!';
+      case 7: return '🎅 산타모자 해금!';
+      case 10: return '👑 왕관 해금!\n🧖 스파 케어 해금!';
+      case 15: return '😇 천사링 해금!';
+      default: return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -99,7 +110,27 @@ class _LevelUpDialogState extends State<LevelUpDialog>
             const SizedBox(height: 6),
             Text('Lv.${widget.newLevel} 달성을 축하해요!',
                 style: const TextStyle(fontSize: 14, color: Colors.white70)),
-            const SizedBox(height: 20),
+            if (_unlockMessage(widget.newLevel) != null) ...[
+              const SizedBox(height: 14),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.white38, width: 1),
+                ),
+                child: Column(children: [
+                  const Text('🎁 새로운 콘텐츠 해금!',
+                      style: TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 6),
+                  Text(_unlockMessage(widget.newLevel)!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 13, color: Colors.white, height: 1.6)),
+                ]),
+              ),
+            ],
+            const SizedBox(height: 16),
             const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text('⭐', style: TextStyle(fontSize: 22)),
               SizedBox(width: 6),

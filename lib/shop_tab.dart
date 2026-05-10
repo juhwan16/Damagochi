@@ -97,7 +97,7 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _load();
   }
 
@@ -181,7 +181,12 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
       Expanded(
         child: TabBarView(
           controller: _tabController,
-          children: [_buildItemsTab(), _buildCustomizeTab()],
+          children: [
+            _buildItemsTab(),
+            _buildAccessoryPage(),
+            _buildThemePage(),
+            _buildColorPage(),
+          ],
         ),
       ),
     ]);
@@ -270,7 +275,14 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
           labelColor: Colors.white,
           unselectedLabelColor: const Color(0xFFCC3366),
           labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-          tabs: const [Tab(text: '🛒  아이템'), Tab(text: '🎨  꾸미기')],
+          isScrollable: true,
+          tabAlignment: TabAlignment.center,
+          tabs: const [
+            Tab(text: '🛒 아이템'),
+            Tab(text: '🎭 악세서리'),
+            Tab(text: '🖼️ 배경'),
+            Tab(text: '🎨 색상'),
+          ],
         ),
       ),
     );
@@ -386,45 +398,25 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildCustomizeTab() {
+  Widget _buildAccessoryPage() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _sectionTitle('🎭', '악세서리'),
-        const SizedBox(height: 10),
-        _buildAccessoryGrid(),
-        const SizedBox(height: 22),
-        _sectionTitle('🖼️', '배경 테마'),
-        const SizedBox(height: 10),
-        _buildThemeGrid(),
-        const SizedBox(height: 22),
-        _sectionTitle('🎨', '캐릭터 색상'),
-        const SizedBox(height: 10),
-        _buildColorGrid(),
-      ]),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+      child: _buildAccessoryGrid(),
     );
   }
 
-  Widget _sectionTitle(String emoji, String label) {
-    return Row(children: [
-      Container(
-        width: 4, height: 20,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFFB6D9), Color(0xFFD4AAFF)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          borderRadius: BorderRadius.circular(2),
-        ),
-      ),
-      const SizedBox(width: 8),
-      Text('$emoji $label',
-          style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFCC3366))),
-    ]);
+  Widget _buildThemePage() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+      child: _buildThemeGrid(),
+    );
+  }
+
+  Widget _buildColorPage() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+      child: _buildColorGrid(),
+    );
   }
 
   Widget _buildAccessoryGrid() {
@@ -435,9 +427,9 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      childAspectRatio: 0.85,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 0.92,
       children: [
         _customCard(
           child: const Column(
@@ -506,40 +498,40 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     final equipped = _custom['theme'] as String? ?? 'default';
 
     return GridView.count(
-      crossAxisCount: 3,
+      crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      childAspectRatio: 0.85,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 1.2,
       children: _themes.map((theme) {
         final isOwned = unlocked.contains(theme.id) || theme.cost == 0;
         final isEquipped = equipped == theme.id;
         return _customCard(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
-              width: 52,
-              height: 32,
+              width: 90,
+              height: 52,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: theme.colors,
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.white70, width: 1.5),
                 boxShadow: [
                   BoxShadow(
                     color: theme.colors.last.withValues(alpha: 0.3),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Text(theme.name,
                 style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFFCC3366)),
                 textAlign: TextAlign.center),
@@ -565,35 +557,35 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      childAspectRatio: 0.85,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 0.92,
       children: _colors.map((c) {
         final isOwned = unlocked.contains(c.id) || c.cost == 0;
         final isEquipped = equipped == c.id;
         return _customCard(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 color: c.color ?? const Color(0xFFFFD0E8),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
+                border: Border.all(color: Colors.white, width: 4),
                 boxShadow: [
                   BoxShadow(
                     color: (c.color ?? const Color(0xFFFFD0E8))
-                        .withValues(alpha: 0.4),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                        .withValues(alpha: 0.5),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Text(c.name,
                 style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFFCC3366)),
                 textAlign: TextAlign.center),

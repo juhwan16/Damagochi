@@ -1,81 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <defs>
-    <radialGradient id="bodyS" cx="38%" cy="32%" r="65%">
+    <radialGradient id="bodyS" cx="36%" cy="30%" r="68%">
       <stop offset="0%" stop-color="#DAD4E8"/>
-      <stop offset="100%" stop-color="#B8B0CC"/>
-    </radialGradient>
-    <radialGradient id="earS" cx="35%" cy="30%" r="65%">
-      <stop offset="0%" stop-color="#C8C0DC"/>
-      <stop offset="100%" stop-color="#A8A0C0"/>
+      <stop offset="100%" stop-color="#B4ACCC"/>
     </radialGradient>
   </defs>
 
-  <!-- Ground shadow -->
-  <ellipse cx="100" cy="191" rx="48" ry="7" fill="#9888A8" opacity="0.12"/>
+  <!-- Shadow -->
+  <ellipse cx="100" cy="191" rx="48" ry="7" fill="#9888A8" opacity="0.13"/>
 
-  <!-- Left ear -->
-  <ellipse cx="60" cy="54" rx="23" ry="27" fill="url(#earS)"/>
-  <ellipse cx="60" cy="58" rx="13" ry="17" fill="#E0D8F4"/>
-  <ellipse cx="56" cy="52" rx="5" ry="6" fill="white" opacity="0.18"/>
-  <!-- Right ear -->
-  <ellipse cx="140" cy="54" rx="23" ry="27" fill="url(#earS)"/>
-  <ellipse cx="140" cy="58" rx="13" ry="17" fill="#E0D8F4"/>
-  <ellipse cx="136" cy="52" rx="5" ry="6" fill="white" opacity="0.18"/>
+  <!-- Ears -->
+  <ellipse cx="62" cy="54" rx="22" ry="26" fill="#B0A8C4"/>
+  <ellipse cx="62" cy="58" rx="12" ry="16" fill="#DED8F0"/>
+  <ellipse cx="138" cy="54" rx="22" ry="26" fill="#B0A8C4"/>
+  <ellipse cx="138" cy="58" rx="12" ry="16" fill="#DED8F0"/>
 
-  <!-- Body (slumped) -->
+  <!-- Body -->
   <ellipse cx="100" cy="122" rx="72" ry="70" fill="url(#bodyS)"/>
-  <ellipse cx="100" cy="122" rx="72" ry="70" fill="none" stroke="#9888A8" stroke-width="2"/>
+  <ellipse cx="100" cy="122" rx="72" ry="70" fill="none" stroke="#9888A8" stroke-width="2.5"/>
   <!-- Dim body shine -->
-  <ellipse cx="76" cy="97" rx="24" ry="15" fill="white" opacity="0.1" transform="rotate(-22 76 97)"/>
+  <ellipse cx="75" cy="97" rx="24" ry="15" fill="white" opacity="0.1" transform="rotate(-20 75 97)"/>
 
-  <!-- Arms drooping -->
-  <ellipse cx="20" cy="136" rx="17" ry="13" fill="#C0B8D0" stroke="#9888A8" stroke-width="2"/>
-  <ellipse cx="180" cy="136" rx="17" ry="13" fill="#C0B8D0" stroke="#9888A8" stroke-width="2"/>
+  <!-- Arms drooping down -->
+  <ellipse cx="21" cy="136" rx="17" ry="13" fill="#C0B8D4" stroke="#9888A8" stroke-width="2"/>
+  <ellipse cx="179" cy="136" rx="17" ry="13" fill="#C0B8D4" stroke="#9888A8" stroke-width="2"/>
 
   <!-- Eye whites -->
-  <ellipse cx="78" cy="104" rx="20" ry="22" fill="white" opacity="0.88"/>
-  <ellipse cx="122" cy="104" rx="20" ry="22" fill="white" opacity="0.88"/>
+  <ellipse cx="78" cy="105" rx="19" ry="21" fill="white" opacity="0.9"/>
+  <ellipse cx="122" cy="105" rx="19" ry="21" fill="white" opacity="0.9"/>
 
-  <!-- X eyes left (chunky, expressive) -->
-  <line x1="63" y1="92" x2="91" y2="118" stroke="#3A1800" stroke-width="7" stroke-linecap="round"/>
-  <line x1="91" y1="92" x2="63" y2="118" stroke="#3A1800" stroke-width="7" stroke-linecap="round"/>
-  <!-- X eyes right -->
-  <line x1="109" y1="92" x2="137" y2="118" stroke="#3A1800" stroke-width="7" stroke-linecap="round"/>
-  <line x1="137" y1="92" x2="109" y2="118" stroke="#3A1800" stroke-width="7" stroke-linecap="round"/>
-  <!-- X eye whites on top for clean cross look -->
-  <line x1="63" y1="92" x2="91" y2="118" stroke="#3A1800" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
-  <line x1="91" y1="92" x2="63" y2="118" stroke="#3A1800" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
-  <line x1="109" y1="92" x2="137" y2="118" stroke="#3A1800" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
-  <line x1="137" y1="92" x2="109" y2="118" stroke="#3A1800" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+  <!-- X eyes — clean and simple -->
+  <line x1="64" y1="93" x2="90" y2="119" stroke="#2A1000" stroke-width="7" stroke-linecap="round"/>
+  <line x1="90" y1="93" x2="64" y2="119" stroke="#2A1000" stroke-width="7" stroke-linecap="round"/>
+  <line x1="110" y1="93" x2="136" y2="119" stroke="#2A1000" stroke-width="7" stroke-linecap="round"/>
+  <line x1="136" y1="93" x2="110" y2="119" stroke="#2A1000" stroke-width="7" stroke-linecap="round"/>
 
-  <!-- Heart nose (pale) -->
-  <path d="M 100 124 C 97 122 92 118 92 115 C 92 112 96 110 100 114 C 104 110 108 112 108 115 C 108 118 103 122 100 124 Z" fill="#9888A8"/>
+  <!-- Nose -->
+  <circle cx="100" cy="122" r="3.5" fill="#9888A8"/>
 
-  <!-- Faint cheeks -->
-  <ellipse cx="57" cy="130" rx="18" ry="11" fill="#9888A8" opacity="0.15"/>
-  <ellipse cx="143" cy="130" rx="18" ry="11" fill="#9888A8" opacity="0.15"/>
+  <!-- Faint blush -->
+  <ellipse cx="57" cy="131" rx="18" ry="11" fill="#9888A8" opacity="0.16"/>
+  <ellipse cx="143" cy="131" rx="18" ry="11" fill="#9888A8" opacity="0.16"/>
 
   <!-- Wavy sick mouth -->
-  <path d="M 80 142 C 87 135 93 149 100 142 C 107 135 113 149 120 142" stroke="#6B4A80" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M 81 141 C 88 134 94 148 100 141 C 106 134 112 148 119 141" stroke="#6B4A80" stroke-width="4" fill="none" stroke-linecap="round"/>
 
-  <!-- Sweat drops (multiple) -->
-  <path d="M 150 68 C 144 60 142 74 150 80 C 158 74 156 60 150 68 Z" fill="#A8D8F0"/>
-  <path d="M 164 83 C 159 77 157 87 164 92 C 171 87 169 77 164 83 Z" fill="#A8D8F0"/>
-  <path d="M 145 85 C 141 80 140 88 145 92 C 150 88 149 80 145 85 Z" fill="#A8D8F0"/>
+  <!-- Sweat drops -->
+  <path d="M 150 70 C 145 62 143 76 150 82 C 157 76 155 62 150 70 Z" fill="#B8DCF0"/>
+  <path d="M 163 85 C 159 79 157 88 163 93 C 169 88 167 79 163 85 Z" fill="#B8DCF0"/>
 
-  <!-- Fever/sickness sparkles (purple) -->
-  <g transform="translate(26,42)">
-    <line x1="0" y1="-7" x2="0" y2="7" stroke="#D4A0E0" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="-7" y1="0" x2="7" y2="0" stroke="#D4A0E0" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="-5" y1="-5" x2="5" y2="5" stroke="#D4A0E0" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="5" y1="-5" x2="-5" y2="5" stroke="#D4A0E0" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Fever sparkles (small, subtle) -->
+  <g transform="translate(28,44)">
+    <line x1="0" y1="-6" x2="0" y2="6" stroke="#C8A0D8" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="-6" y1="0" x2="6" y2="0" stroke="#C8A0D8" stroke-width="2.5" stroke-linecap="round"/>
   </g>
-  <g transform="translate(172,38)">
-    <line x1="0" y1="-5" x2="0" y2="5" stroke="#D4A0E0" stroke-width="2" stroke-linecap="round"/>
-    <line x1="-5" y1="0" x2="5" y2="0" stroke="#D4A0E0" stroke-width="2" stroke-linecap="round"/>
-    <line x1="-3" y1="-3" x2="3" y2="3" stroke="#D4A0E0" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="3" y1="-3" x2="-3" y2="3" stroke="#D4A0E0" stroke-width="1.5" stroke-linecap="round"/>
+  <g transform="translate(170,40)">
+    <line x1="0" y1="-5" x2="0" y2="5" stroke="#C8A0D8" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-5" y1="0" x2="5" y2="0" stroke="#C8A0D8" stroke-width="2" stroke-linecap="round"/>
   </g>
-  <!-- Extra tiny purple dot -->
-  <circle cx="30" cy="60" r="3" fill="#D4A0E0" opacity="0.6"/>
 </svg>

@@ -64,8 +64,10 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
   Future<void> _refresh() async {
     _data = await StorageService.loadAll();
     final custom = await StorageService.loadCustomization();
-    _accessoryAsset = StorageService.accessoryAsset(custom['accessory'] as String);
-    _characterColor = StorageService.characterColor(custom['color'] as String);
+    _accessoryAsset =
+        StorageService.accessoryAsset(custom['accessory'] as String);
+    _characterColor =
+        StorageService.characterColor(custom['color'] as String);
 
     final isTestMode = await StorageService.isTestMode();
     if (isTestMode || _hasPermission || await UsageService.hasPermission()) {
@@ -127,10 +129,8 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
         const Icon(Icons.star_rounded, color: Colors.yellow),
         const SizedBox(width: 8),
         Flexible(
-          child: Text(
-            '목표 달성! XP +20, 코인 +$coinBonus$streakMsg 🎉',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          child: Text('목표 달성! XP +20, 코인 +$coinBonus$streakMsg 🎉',
+              style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
       ]),
       backgroundColor: const Color(0xFFFF85B3),
@@ -138,6 +138,19 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       duration: const Duration(seconds: 4),
     ));
+  }
+
+  Color _petGlowColor(PetModel pet) {
+    switch (pet.state) {
+      case PetState.happy:
+        return const Color(0xFFFFD700);
+      case PetState.normal:
+        return const Color(0xFFFF85B3);
+      case PetState.tired:
+        return const Color(0xFFFF9944);
+      case PetState.sick:
+        return const Color(0xFFFF4444);
+    }
   }
 
   @override
@@ -180,6 +193,184 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
   bool _hasLowStat(PetModel pet) =>
       pet.hunger < 20 || pet.happiness < 20 || pet.energy < 20;
 
+  Widget _buildHeader(PetModel pet) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Text(pet.tierName,
+                style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFFCC3366))),
+            const SizedBox(width: 6),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFB6D9), Color(0xFFD4AAFF)],
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text('Lv.${pet.level}',
+                  style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+            ),
+          ]),
+          const SizedBox(height: 6),
+          SizedBox(
+            width: 160,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Stack(children: [
+                Container(height: 8, color: Colors.white54),
+                FractionallySizedBox(
+                  widthFactor: pet.xpProgress.clamp(0.0, 1.0),
+                  child: Container(
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Color(0xFFFFB6D9), Color(0xFFFF85B3)]),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text('${pet.xp} / ${pet.xpToNextLevel} XP',
+              style:
+                  const TextStyle(fontSize: 11, color: Color(0xFFCC3366))),
+        ]),
+        Row(children: [
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFFF8E1), Color(0xFFFFECB3)],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.amber.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(children: [
+              const Text('🪙', style: TextStyle(fontSize: 16)),
+              const SizedBox(width: 4),
+              Text('${pet.coins}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFCC3366),
+                      fontSize: 16)),
+            ]),
+          ),
+          const SizedBox(width: 4),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded,
+                color: Color(0xFFCC3366)),
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const SettingsScreen()));
+              _refresh();
+            },
+          ),
+        ]),
+      ],
+    );
+  }
+
+  Widget _buildCharacter(PetModel pet) {
+    final glowColor = _petGlowColor(pet);
+    return AnimatedBuilder(
+      animation: Listenable.merge([_floatAnim, _shakeAnim]),
+      builder: (context, child) {
+        final dx = pet.state == PetState.sick ? _shakeAnim.value : 0.0;
+        return Transform.translate(
+            offset: Offset(dx, _floatAnim.value), child: child);
+      },
+      child: Column(children: [
+        Stack(alignment: Alignment.center, children: [
+          // 상태별 글로우 원
+          Container(
+            width: 230,
+            height: 230,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  glowColor.withValues(alpha: 0.22),
+                  glowColor.withValues(alpha: 0.05),
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
+          ),
+          PetWidget(
+            state: pet.state,
+            accessoryAsset: _accessoryAsset,
+            characterColor: _characterColor,
+          ),
+        ]),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            5,
+            (i) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  i < pet.healthHearts
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_outline_rounded,
+                  key: ValueKey('${i}_${i < pet.healthHearts}'),
+                  color: i < pet.healthHearts
+                      ? const Color(0xFFFF4488)
+                      : Colors.pink[200],
+                  size: 30,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.75),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: glowColor.withValues(alpha: 0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(pet.statusMessage,
+              style: const TextStyle(
+                  fontSize: 15,
+                  color: Color(0xFFCC3366),
+                  fontWeight: FontWeight.w600)),
+        ),
+      ]),
+    );
+  }
+
   Widget _buildLowStatWarning(PetModel pet) {
     final warnings = <String>[];
     if (pet.hunger < 20) warnings.add('🍙 배고파해요');
@@ -189,9 +380,20 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.orange[50],
+        gradient: LinearGradient(
+          colors: [Colors.orange[50]!, Colors.red[50]!],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.orange[300]!),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(children: [
         const Text('⚠️', style: TextStyle(fontSize: 22)),
@@ -209,130 +411,38 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildHeader(PetModel pet) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Text(pet.tierName,
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFFCC3366))),
-            const SizedBox(width: 6),
-            Text('Lv.${pet.level}',
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFCC3366))),
-          ]),
-          const SizedBox(height: 4),
-          SizedBox(
-            width: 150,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: LinearProgressIndicator(
-                value: pet.xpProgress.clamp(0.0, 1.0),
-                backgroundColor: Colors.white54,
-                color: const Color(0xFFFF85B3),
-                minHeight: 8,
-              ),
-            ),
-          ),
-          Text('${pet.xp} / ${pet.xpToNextLevel} XP',
-              style:
-                  const TextStyle(fontSize: 11, color: Color(0xFFCC3366))),
-        ]),
-        Row(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(12)),
-            child: Row(children: [
-              const Text('🪙', style: TextStyle(fontSize: 16)),
-              const SizedBox(width: 4),
-              Text('${pet.coins}',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFCC3366),
-                      fontSize: 16)),
-            ]),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_rounded, color: Color(0xFFCC3366)),
-            onPressed: () async {
-              await Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const SettingsScreen()));
-              _refresh();
-            },
-          ),
-        ]),
-      ],
-    );
-  }
-
-  Widget _buildCharacter(PetModel pet) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([_floatAnim, _shakeAnim]),
-      builder: (context, child) {
-        final dx = pet.state == PetState.sick ? _shakeAnim.value : 0.0;
-        return Transform.translate(
-            offset: Offset(dx, _floatAnim.value), child: child);
-      },
-      child: Column(children: [
-        PetWidget(
-          state: pet.state,
-          accessoryAsset: _accessoryAsset,
-          characterColor: _characterColor,
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-              5,
-              (i) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                    child: Icon(
-                      i < pet.healthHearts
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_outline_rounded,
-                      color: i < pet.healthHearts
-                          ? const Color(0xFFFF4488)
-                          : Colors.pink[200],
-                      size: 30,
-                    ),
-                  )),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.65),
-              borderRadius: BorderRadius.circular(20)),
-          child: Text(pet.statusMessage,
-              style: const TextStyle(
-                  fontSize: 15,
-                  color: Color(0xFFCC3366),
-                  fontWeight: FontWeight.w600)),
-        ),
-      ]),
-    );
-  }
-
   Widget _buildStatsCard(PetModel pet) {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.75),
-          borderRadius: BorderRadius.circular(20)),
+        color: Colors.white.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.pink.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(children: [
-        StatBar(emoji: '🍙', label: '배고픔', value: pet.hunger, color: Colors.orange),
+        StatBar(
+            emoji: '🍙',
+            label: '배고픔',
+            value: pet.hunger,
+            color: Colors.orange),
         const SizedBox(height: 14),
-        StatBar(emoji: '😊', label: '행복도', value: pet.happiness, color: Colors.pink),
+        StatBar(
+            emoji: '😊',
+            label: '행복도',
+            value: pet.happiness,
+            color: Colors.pink),
         const SizedBox(height: 14),
-        StatBar(emoji: '⚡', label: '에너지', value: pet.energy, color: Colors.blue),
+        StatBar(
+            emoji: '⚡',
+            label: '에너지',
+            value: pet.energy,
+            color: Colors.blue),
       ]),
     );
   }
@@ -341,50 +451,82 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     final goal = pet.goalMinutes;
     final usage = _usageMinutes;
     final progress = goal > 0 ? (usage / goal).clamp(0.0, 1.0) : 0.0;
+    final pct = (progress * 100).round();
     final over = goal > 0 && usage >= goal;
 
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.75),
-          borderRadius: BorderRadius.circular(20)),
+        color: Colors.white.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.pink.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           const Row(children: [
-            Icon(Icons.photo_camera_rounded, size: 18, color: Color(0xFFE1306C)),
+            Icon(Icons.photo_camera_rounded,
+                size: 18, color: Color(0xFFE1306C)),
             SizedBox(width: 6),
             Text('인스타그램 사용시간',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFCC3366))),
           ]),
           Text('${usage}분 / ${goal}분',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: 13,
                   color: over ? Colors.red : const Color(0xFFCC3366))),
         ]),
         const SizedBox(height: 10),
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: LinearProgressIndicator(
-            value: progress,
-            backgroundColor: Colors.pink[100],
-            color: over ? Colors.red : const Color(0xFFFF85B3),
-            minHeight: 12,
-          ),
+          borderRadius: BorderRadius.circular(10),
+          child: Stack(children: [
+            Container(height: 14, color: Colors.pink[50]),
+            FractionallySizedBox(
+              widthFactor: progress,
+              child: Container(
+                height: 14,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: over
+                        ? [Colors.red[300]!, Colors.red[600]!]
+                        : [const Color(0xFFFFB6D9), const Color(0xFFFF85B3)],
+                  ),
+                ),
+              ),
+            ),
+          ]),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 6),
-          child: over
-              ? const Text('⚠️ 목표 시간 초과!',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              over
+                  ? const Text('⚠️ 목표 시간 초과!',
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600))
+                  : Text('✅ 남은 시간: ${goal - usage}분',
+                      style: const TextStyle(
+                          color: Colors.green,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600)),
+              Text('$pct%',
                   style: TextStyle(
-                      color: Colors.red,
                       fontSize: 12,
-                      fontWeight: FontWeight.w600))
-              : Text('✅ 남은 시간: ${goal - usage}분',
-                  style: const TextStyle(
-                      color: Colors.green,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600)),
+                      fontWeight: FontWeight.bold,
+                      color: over ? Colors.red : Colors.grey[500])),
+            ],
+          ),
         ),
       ]),
     );
@@ -394,8 +536,9 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.75),
-          borderRadius: BorderRadius.circular(20)),
+        color: Colors.white.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(22),
+      ),
       child: Column(children: [
         const Text('📱 사용 시간 권한이 필요해요',
             style: TextStyle(

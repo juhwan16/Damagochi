@@ -22,7 +22,6 @@ class _CareTabState extends State<CareTab> {
   String? _accessoryAsset;
   Color? _characterColor;
 
-  // 쿨다운: 남은 시간(ms) — 매 초 감소
   Map<String, int> _cooldowns = {
     'feed': 0,
     'play': 0,
@@ -62,8 +61,10 @@ class _CareTabState extends State<CareTab> {
     _data = await StorageService.loadAll();
     _usageMinutes = await UsageService.getInstagramUsageMinutes();
     final custom = await StorageService.loadCustomization();
-    _accessoryAsset = StorageService.accessoryAsset(custom['accessory'] as String);
-    _characterColor = StorageService.characterColor(custom['color'] as String);
+    _accessoryAsset =
+        StorageService.accessoryAsset(custom['accessory'] as String);
+    _characterColor =
+        StorageService.characterColor(custom['color'] as String);
 
     final feeds = <String, int>{};
     for (final action in ['feed', 'play', 'sleep', 'clean']) {
@@ -89,10 +90,14 @@ class _CareTabState extends State<CareTab> {
         coins: _data['coins'] ?? 0,
       );
 
-  Future<void> _handleCare(String actionKey, Future<CareResult> Function() action, String label) async {
+  Future<void> _handleCare(
+      String actionKey,
+      Future<CareResult> Function() action,
+      String label) async {
     final result = await action();
     if (result.onCooldown) {
-      _snack('⏰ 아직 쿨타임이에요! ${_fmtCooldown(result.remainingMs)} 남았어요', isWarning: true);
+      _snack('⏰ 아직 쿨타임이에요! ${_fmtCooldown(result.remainingMs)} 남았어요',
+          isWarning: true);
       return;
     }
     setState(() => _cooldowns[actionKey] = 0);
@@ -120,7 +125,8 @@ class _CareTabState extends State<CareTab> {
   void _snack(String msg, {bool isWarning = false}) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(msg, style: const TextStyle(fontWeight: FontWeight.bold)),
-      backgroundColor: isWarning ? Colors.orange[700] : const Color(0xFFFF85B3),
+      backgroundColor:
+          isWarning ? Colors.orange[700] : const Color(0xFFFF85B3),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       duration: const Duration(seconds: 2),
@@ -130,7 +136,8 @@ class _CareTabState extends State<CareTab> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator(color: Color(0xFFFF85B3)));
+      return const Center(
+          child: CircularProgressIndicator(color: Color(0xFFFF85B3)));
     }
     final pet = _makePet();
     return SingleChildScrollView(
@@ -147,21 +154,38 @@ class _CareTabState extends State<CareTab> {
 
   Widget _buildPreview(PetModel pet) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(20)),
+        gradient: LinearGradient(
+          colors: [
+            Colors.white.withValues(alpha: 0.9),
+            Colors.pink[50]!.withValues(alpha: 0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.pink.withValues(alpha: 0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(children: [
         PetWidget(
           state: pet.state,
-          size: 160,
+          size: 150,
           accessoryAsset: _accessoryAsset,
           characterColor: _characterColor,
         ),
         const SizedBox(height: 8),
         Text(pet.statusMessage,
             style: const TextStyle(
-                fontSize: 14, color: Color(0xFFCC3366), fontWeight: FontWeight.w600)),
+                fontSize: 14,
+                color: Color(0xFFCC3366),
+                fontWeight: FontWeight.w600)),
       ]),
     );
   }
@@ -170,43 +194,76 @@ class _CareTabState extends State<CareTab> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.75),
-          borderRadius: BorderRadius.circular(20)),
+        color: Colors.white.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.pink.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(children: [
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Text('현재 상태',
+        Row(children: [
+          Container(
+            width: 4, height: 18,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF85B3),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Text('현재 상태',
               style: TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
-        ),
-        const SizedBox(height: 16),
-        StatBar(emoji: '🍙', label: '배고픔', value: pet.hunger, color: Colors.orange),
-        const SizedBox(height: 14),
-        StatBar(emoji: '😊', label: '행복도', value: pet.happiness, color: Colors.pink),
-        const SizedBox(height: 14),
-        StatBar(emoji: '⚡', label: '에너지', value: pet.energy, color: Colors.blue),
-        const SizedBox(height: 14),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Text('전체 건강도: ',
-              style: TextStyle(color: Color(0xFFCC3366), fontWeight: FontWeight.w600)),
-          Text('${(pet.overallHealth * 100).round()}%',
-              style: const TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFF4488))),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFCC3366))),
         ]),
+        const SizedBox(height: 16),
+        StatBar(
+            emoji: '🍙', label: '배고픔', value: pet.hunger, color: Colors.orange),
+        const SizedBox(height: 14),
+        StatBar(
+            emoji: '😊', label: '행복도', value: pet.happiness, color: Colors.pink),
+        const SizedBox(height: 14),
+        StatBar(
+            emoji: '⚡', label: '에너지', value: pet.energy, color: Colors.blue),
+        const SizedBox(height: 14),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFD0E8), Color(0xFFEDD5F5)],
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Text('전체 건강도',
+                style: TextStyle(
+                    color: Color(0xFFCC3366), fontWeight: FontWeight.w600)),
+            const SizedBox(width: 10),
+            Text('${(pet.overallHealth * 100).round()}%',
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF4488))),
+          ]),
+        ),
       ]),
     );
   }
 
   Widget _buildCareButtons() {
     final actions = [
-      _Action('🍙', '밥주기', '배고픔 +25', 'feed', '배고픔 +25  +3XP  +1🪙',
-          Colors.orange[100]!, StorageService.feed),
-      _Action('🎮', '놀아주기', '행복 +20', 'play', '행복 +20  +5XP  +2🪙',
-          Colors.pink[100]!, StorageService.play),
-      _Action('💤', '재우기', '에너지 +35', 'sleep', '에너지 +35  +4XP  +1🪙',
-          Colors.blue[100]!, StorageService.sleep),
-      _Action('🛁', '씻기기', '행복 +10', 'clean', '행복 +10  +3XP  +1🪙',
-          Colors.green[100]!, StorageService.clean),
+      _Action('🍙', '밥주기', '배고픔 +25 · +3XP', 'feed', '🍙 맛있게 먹었어요!',
+          [const Color(0xFFFFF0C8), const Color(0xFFFFD080)], StorageService.feed),
+      _Action('🎮', '놀아주기', '행복 +20 · +5XP', 'play', '🎮 신나게 놀았어요!',
+          [const Color(0xFFFFE0F0), const Color(0xFFFFB6D9)], StorageService.play),
+      _Action('💤', '재우기', '에너지 +35 · +4XP', 'sleep', '💤 푹 잤어요!',
+          [const Color(0xFFDCEEFF), const Color(0xFFB0D4F8)], StorageService.sleep),
+      _Action('🛁', '씻기기', '행복 +10 · +3XP', 'clean', '🛁 깨끗해졌어요!',
+          [const Color(0xFFDCF5DC), const Color(0xFFB0E0B0)], StorageService.clean),
     ];
 
     return GridView.count(
@@ -222,35 +279,67 @@ class _CareTabState extends State<CareTab> {
         return GestureDetector(
           onTap: () => _handleCare(a.key, a.action, a.successMsg),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 250),
             decoration: BoxDecoration(
+              gradient: onCooldown
+                  ? null
+                  : LinearGradient(
+                      colors: a.gradient,
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+              color: onCooldown ? const Color(0xFFF5F5F5) : null,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(
                 color: onCooldown
-                    ? Colors.grey[100]!.withValues(alpha: 0.9)
-                    : a.color.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                    color: onCooldown ? Colors.grey[300]! : Colors.white54,
-                    width: 2)),
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(a.emoji,
-                  style: TextStyle(
-                      fontSize: 34,
-                      color: onCooldown ? const Color(0x88000000) : null)),
-              const SizedBox(height: 5),
-              Text(a.label,
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: onCooldown
-                          ? Colors.grey[500]
-                          : const Color(0xFFCC3366))),
-              const SizedBox(height: 2),
-              onCooldown
-                  ? Text(_fmtCooldown(cd),
-                      style: const TextStyle(fontSize: 11, color: Colors.grey))
-                  : Text(a.sub,
-                      style: const TextStyle(fontSize: 11, color: Colors.black54)),
-            ]),
+                    ? Colors.grey[200]!
+                    : a.gradient.last.withValues(alpha: 0.5),
+                width: 1.5,
+              ),
+              boxShadow: onCooldown
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: a.gradient.last.withValues(alpha: 0.35),
+                        blurRadius: 12,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+            ),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(a.emoji,
+                      style: TextStyle(
+                          fontSize: 36,
+                          color: onCooldown
+                              ? const Color(0x44000000)
+                              : null)),
+                  const SizedBox(height: 5),
+                  Text(a.label,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: onCooldown
+                              ? Colors.grey[400]
+                              : const Color(0xFFCC3366))),
+                  const SizedBox(height: 3),
+                  onCooldown
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.timer_outlined,
+                                size: 11, color: Colors.grey[400]),
+                            const SizedBox(width: 3),
+                            Text(_fmtCooldown(cd),
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.grey[400])),
+                          ],
+                        )
+                      : Text(a.sub,
+                          style: const TextStyle(
+                              fontSize: 11, color: Colors.black45)),
+                ]),
           ),
         );
       }).toList(),
@@ -260,8 +349,8 @@ class _CareTabState extends State<CareTab> {
 
 class _Action {
   final String emoji, label, sub, key, successMsg;
-  final Color color;
+  final List<Color> gradient;
   final Future<CareResult> Function() action;
   const _Action(this.emoji, this.label, this.sub, this.key, this.successMsg,
-      this.color, this.action);
+      this.gradient, this.action);
 }

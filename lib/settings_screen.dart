@@ -241,7 +241,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _quickBtn(String label, int minutes) {
     return GestureDetector(
       onTap: () async {
-        final v = minutes.toDouble().clamp(0, 300);
+        final v = minutes.toDouble().clamp(0.0, 300.0);
         await StorageService.setTestUsageMinutes(v.toInt());
         setState(() => _testUsage = v);
       },

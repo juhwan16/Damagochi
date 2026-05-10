@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'pet_model.dart';
 import 'pet_widget.dart';
 import 'stat_bar_widget.dart';
 import 'storage_service.dart';
 import 'usage_service.dart';
+import 'level_up_dialog.dart';
 
 class CareTab extends StatefulWidget {
   const CareTab({super.key});
@@ -19,10 +21,32 @@ class _CareTabState extends State<CareTab> {
   String? _accessoryAsset;
   Color? _characterColor;
 
+  // 쿨다운: 남은 시간(ms) — 매 초 감소
+  Map<String, int> _cooldowns = {
+    'feed': 0,
+    'play': 0,
+    'sleep': 0,
+    'clean': 0,
+  };
+  Timer? _cooldownTimer;
+
   @override
   void initState() {
     super.initState();
     _refresh();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {
+        for (final k in _cooldowns.keys) {
+          _cooldowns[k] = (_cooldowns[k]! - 1000).clamp(0, _cooldowns[k]!);
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _cooldownTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -31,7 +55,18 @@ class _CareTabState extends State<CareTab> {
     final custom = await StorageService.loadCustomization();
     _accessoryAsset = StorageService.accessoryAsset(custom['accessory'] as String);
     _characterColor = StorageService.characterColor(custom['color'] as String);
-    if (mounted) setState(() => _loading = false);
+
+    final feeds = <String, int>{};
+    for (final action in ['feed', 'play', 'sleep', 'clean']) {
+      feeds[action] = await StorageService.getCooldownRemaining(action);
+    }
+
+    if (mounted) {
+      setState(() {
+        _loading = false;
+        _cooldowns = feeds;
+      });
+    }
   }
 
   PetModel _makePet() => PetModel(
@@ -45,18 +80,42 @@ class _CareTabState extends State<CareTab> {
         coins: _data['coins'] ?? 0,
       );
 
-  Future<void> _doAction(Future<void> Function() action, String message) async {
-    await action();
-    await _refresh();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFFFF85B3),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 2),
-      ));
+  Future<void> _handleCare(String actionKey, Future<CareResult> Function() action, String label) async {
+    final result = await action();
+    if (result.onCooldown) {
+      _snack('⏰ 아직 쿨타임이에요! ${_fmtCooldown(result.remainingMs)} 남았어요', isWarning: true);
+      return;
     }
+    setState(() => _cooldowns[actionKey] = 0);
+    await _refresh();
+    if (!mounted) return;
+    _snack('$label  +${result.xpGained}XP 🌟  +${result.coinsGained}🪙');
+    if (result.leveledUp) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) showLevelUpDialog(context, result.newLevel);
+      });
+    }
+  }
+
+  String _fmtCooldown(int ms) {
+    if (ms <= 0) return '';
+    final total = ms ~/ 1000;
+    final h = total ~/ 3600;
+    final m = (total % 3600) ~/ 60;
+    final s = total % 60;
+    if (h > 0) return '${h}시간 ${m}분';
+    if (m > 0) return '${m}분 ${s}초';
+    return '${s}초';
+  }
+
+  void _snack(String msg, {bool isWarning = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg, style: const TextStyle(fontWeight: FontWeight.bold)),
+      backgroundColor: isWarning ? Colors.orange[700] : const Color(0xFFFF85B3),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      duration: const Duration(seconds: 2),
+    ));
   }
 
   @override
@@ -108,7 +167,8 @@ class _CareTabState extends State<CareTab> {
         const Align(
           alignment: Alignment.centerLeft,
           child: Text('현재 상태',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
+              style: TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
         ),
         const SizedBox(height: 16),
         StatBar(emoji: '🍙', label: '배고픔', value: pet.hunger, color: Colors.orange),
@@ -130,14 +190,14 @@ class _CareTabState extends State<CareTab> {
 
   Widget _buildCareButtons() {
     final actions = [
-      _Action('🍙', '밥주기', '배고픔 +25', Colors.orange[100]!,
-          () => _doAction(StorageService.feed, '🍙 맛있게 먹었어요! 배고픔 +25')),
-      _Action('🎮', '놀아주기', '행복 +20', Colors.pink[100]!,
-          () => _doAction(StorageService.play, '🎮 신나게 놀았어요! 행복 +20')),
-      _Action('💤', '재우기', '에너지 +35', Colors.blue[100]!,
-          () => _doAction(StorageService.sleep, '💤 푹 잤어요! 에너지 +35')),
-      _Action('🛁', '씻기기', '행복 +10', Colors.green[100]!,
-          () => _doAction(StorageService.clean, '🛁 깨끗해졌어요! 행복 +10')),
+      _Action('🍙', '밥주기', '배고픔 +25', 'feed', '배고픔 +25  +3XP  +1🪙',
+          Colors.orange[100]!, StorageService.feed),
+      _Action('🎮', '놀아주기', '행복 +20', 'play', '행복 +20  +5XP  +2🪙',
+          Colors.pink[100]!, StorageService.play),
+      _Action('💤', '재우기', '에너지 +35', 'sleep', '에너지 +35  +4XP  +1🪙',
+          Colors.blue[100]!, StorageService.sleep),
+      _Action('🛁', '씻기기', '행복 +10', 'clean', '행복 +10  +3XP  +1🪙',
+          Colors.green[100]!, StorageService.clean),
     ];
 
     return GridView.count(
@@ -146,31 +206,53 @@ class _CareTabState extends State<CareTab> {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      childAspectRatio: 1.3,
-      children: actions.map((a) => GestureDetector(
-        onTap: a.onTap,
-        child: Container(
-          decoration: BoxDecoration(
-              color: a.color.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: Colors.white54, width: 2)),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(a.emoji, style: const TextStyle(fontSize: 36)),
-            const SizedBox(height: 6),
-            Text(a.label,
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
-            Text(a.sub, style: const TextStyle(fontSize: 12, color: Colors.black54)),
-          ]),
-        ),
-      )).toList(),
+      childAspectRatio: 1.15,
+      children: actions.map((a) {
+        final cd = _cooldowns[a.key] ?? 0;
+        final onCooldown = cd > 0;
+        return GestureDetector(
+          onTap: () => _handleCare(a.key, a.action, a.successMsg),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+                color: onCooldown
+                    ? Colors.grey[100]!.withValues(alpha: 0.9)
+                    : a.color.withValues(alpha: 0.9),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                    color: onCooldown ? Colors.grey[300]! : Colors.white54,
+                    width: 2)),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(a.emoji,
+                  style: TextStyle(
+                      fontSize: 34,
+                      color: onCooldown ? const Color(0x88000000) : null)),
+              const SizedBox(height: 5),
+              Text(a.label,
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: onCooldown
+                          ? Colors.grey[500]
+                          : const Color(0xFFCC3366))),
+              const SizedBox(height: 2),
+              onCooldown
+                  ? Text(_fmtCooldown(cd),
+                      style: const TextStyle(fontSize: 11, color: Colors.grey))
+                  : Text(a.sub,
+                      style: const TextStyle(fontSize: 11, color: Colors.black54)),
+            ]),
+          ),
+        );
+      }).toList(),
     );
   }
 }
 
 class _Action {
-  final String emoji, label, sub;
+  final String emoji, label, sub, key, successMsg;
   final Color color;
-  final VoidCallback onTap;
-  const _Action(this.emoji, this.label, this.sub, this.color, this.onTap);
+  final Future<CareResult> Function() action;
+  const _Action(this.emoji, this.label, this.sub, this.key, this.successMsg,
+      this.color, this.action);
 }

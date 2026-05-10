@@ -7,7 +7,9 @@ class _Item {
   final String emoji, name, description;
   final int cost;
   final Map<String, int> effects;
-  const _Item(this.emoji, this.name, this.description, this.cost, this.effects);
+  final List<Color> gradient;
+  const _Item(this.emoji, this.name, this.description, this.cost, this.effects,
+      this.gradient);
 }
 
 class _AccItem {
@@ -31,12 +33,21 @@ class _ColorItem {
 }
 
 const _items = [
-  _Item('🍙', '주먹밥', '배고픔 +25', 10, {'hunger': 25}),
-  _Item('🎂', '생일케이크', '배고픔 +45\n행복 +15', 35, {'hunger': 45, 'happiness': 15}),
-  _Item('🎮', '장난감', '행복 +35', 25, {'happiness': 35}),
-  _Item('⚡', '에너지드링크', '에너지 +40', 20, {'energy': 40}),
-  _Item('💊', '비타민', '모든 스탯 +20', 55, {'hunger': 20, 'happiness': 20, 'energy': 20}),
-  _Item('🍱', '프리미엄 도시락', '배고픔 +60\n에너지 +20', 65, {'hunger': 60, 'energy': 20}),
+  _Item('🍙', '주먹밥', '배고픔 +25', 10, {'hunger': 25},
+      [Color(0xFFFFF8E1), Color(0xFFFFECB3)]),
+  _Item('🎂', '생일케이크', '배고픔 +45\n행복 +15', 35,
+      {'hunger': 45, 'happiness': 15},
+      [Color(0xFFFCE4EC), Color(0xFFF8BBD9)]),
+  _Item('🎮', '장난감', '행복 +35', 25, {'happiness': 35},
+      [Color(0xFFE8F5E9), Color(0xFFC8E6C9)]),
+  _Item('⚡', '에너지드링크', '에너지 +40', 20, {'energy': 40},
+      [Color(0xFFE3F2FD), Color(0xFFBBDEFB)]),
+  _Item('💊', '비타민', '모든 스탯 +20', 55,
+      {'hunger': 20, 'happiness': 20, 'energy': 20},
+      [Color(0xFFF3E5F5), Color(0xFFE1BEE7)]),
+  _Item('🍱', '프리미엄 도시락', '배고픔 +60\n에너지 +20', 65,
+      {'hunger': 60, 'energy': 20},
+      [Color(0xFFFFE0B2), Color(0xFFFFCC80)]),
 ];
 
 const _accessories = [
@@ -113,8 +124,6 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     ));
   }
 
-  // ─── 아이템 구매 ─────────────────────────────────────────────
-
   Future<void> _buyItem(_Item item) async {
     if (_coins < item.cost) {
       _snack('코인이 부족해요! 목표를 달성해서 코인을 모으세요 🪙', error: true);
@@ -128,10 +137,8 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     }
   }
 
-  // ─── 커스터마이징 ──────────────────────────────────────────────
-
   Future<void> _buyCustom(String type, String id, int cost) async {
-    if (cost == 0) return; // free
+    if (cost == 0) return;
     final ok = await StorageService.unlockCustomItem(type, id, cost);
     if (ok) {
       await _load();
@@ -166,46 +173,8 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      // 코인 + 탭바
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(14)),
-            child: Row(children: [
-              const Text('🪙', style: TextStyle(fontSize: 20)),
-              const SizedBox(width: 6),
-              Text('$_coins',
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
-            ]),
-          ),
-          const Text('목표 달성 시 코인 +15',
-              style: TextStyle(color: Colors.black45, fontSize: 12)),
-        ]),
-      ),
-      // 탭바
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(14)),
-          child: TabBar(
-            controller: _tabController,
-            indicator: BoxDecoration(
-                color: const Color(0xFFFF85B3),
-                borderRadius: BorderRadius.circular(12)),
-            labelColor: Colors.white,
-            unselectedLabelColor: const Color(0xFFCC3366),
-            tabs: const [Tab(text: '🛒  아이템'), Tab(text: '🎨  꾸미기')],
-          ),
-        ),
-      ),
-      // 탭 내용
+      _buildHeader(),
+      _buildTabBar(),
       Expanded(
         child: TabBarView(
           controller: _tabController,
@@ -215,85 +184,246 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     ]);
   }
 
-  // ─── 아이템 탭 ───────────────────────────────────────────────
-
-  Widget _buildItemsTab() {
-    return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 0.85),
-      itemCount: _items.length,
-      itemBuilder: (context, i) {
-        final item = _items[i];
-        final can = _coins >= item.cost;
-        return Container(
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.82),
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                  color: can ? Colors.pink[200]! : Colors.grey[300]!, width: 1.5)),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(item.emoji, style: const TextStyle(fontSize: 38)),
-            const SizedBox(height: 6),
-            Text(item.name,
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
-            const SizedBox(height: 3),
-            Text(item.description,
-                style: const TextStyle(fontSize: 11, color: Colors.black54),
-                textAlign: TextAlign.center),
-            const SizedBox(height: 10),
-            GestureDetector(
-              onTap: () => _buyItem(item),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(
-                    color: can ? const Color(0xFFFF85B3) : Colors.grey[300],
-                    borderRadius: BorderRadius.circular(12)),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Text('🪙', style: TextStyle(fontSize: 13)),
-                  const SizedBox(width: 4),
-                  Text('${item.cost}',
-                      style: TextStyle(
-                          color: can ? Colors.white : Colors.grey[600],
-                          fontWeight: FontWeight.bold, fontSize: 14)),
-                ]),
-              ),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFF8E1), Color(0xFFFFECB3)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: Colors.amber[300]!, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.amber.withValues(alpha: 0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(children: [
+            const Text('🪙', style: TextStyle(fontSize: 22)),
+            const SizedBox(width: 6),
+            Text('$_coins',
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFCC3366))),
           ]),
-        );
-      },
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.7),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(children: [
+            Icon(Icons.info_outline_rounded, size: 14, color: Colors.pink[300]),
+            const SizedBox(width: 5),
+            const Text('목표 달성 시 코인 +15',
+                style: TextStyle(color: Colors.black54, fontSize: 12)),
+          ]),
+        ),
+      ]),
     );
   }
 
-  // ─── 꾸미기 탭 ───────────────────────────────────────────────
+  Widget _buildTabBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+      child: Container(
+        height: 46,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.65),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.pink.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: TabBar(
+          controller: _tabController,
+          indicator: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFB6D9), Color(0xFFFF85B3)],
+            ),
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFFF85B3).withValues(alpha: 0.4),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          labelColor: Colors.white,
+          unselectedLabelColor: const Color(0xFFCC3366),
+          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          tabs: const [Tab(text: '🛒  아이템'), Tab(text: '🎨  꾸미기')],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItemsTab() {
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.82),
+      itemCount: _items.length,
+      itemBuilder: (context, i) => _buildItemCard(_items[i]),
+    );
+  }
+
+  Widget _buildItemCard(_Item item) {
+    final can = _coins >= item.cost;
+    return GestureDetector(
+      onTap: () => _buyItem(item),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, item.gradient.first.withValues(alpha: 0.6)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: can
+                ? item.gradient.last.withValues(alpha: 0.8)
+                : Colors.grey[300]!,
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: can
+                  ? item.gradient.last.withValues(alpha: 0.25)
+                  : Colors.black.withValues(alpha: 0.04),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: item.gradient,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: item.gradient.last.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(item.emoji, style: const TextStyle(fontSize: 32)),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(item.name,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFCC3366))),
+          const SizedBox(height: 3),
+          Text(item.description,
+              style: const TextStyle(fontSize: 11, color: Colors.black45),
+              textAlign: TextAlign.center),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+            decoration: BoxDecoration(
+              gradient: can
+                  ? const LinearGradient(
+                      colors: [Color(0xFFFFB6D9), Color(0xFFFF85B3)],
+                    )
+                  : null,
+              color: can ? null : Colors.grey[200],
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: can
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFFFF85B3).withValues(alpha: 0.4),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      )
+                    ]
+                  : null,
+            ),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              const Text('🪙', style: TextStyle(fontSize: 13)),
+              const SizedBox(width: 4),
+              Text('${item.cost}',
+                  style: TextStyle(
+                      color: can ? Colors.white : Colors.grey[500],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15)),
+            ]),
+          ),
+        ]),
+      ),
+    );
+  }
 
   Widget _buildCustomizeTab() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        _sectionTitle('🎭 악세서리'),
+        _sectionTitle('🎭', '악세서리'),
         const SizedBox(height: 10),
         _buildAccessoryGrid(),
-        const SizedBox(height: 20),
-        _sectionTitle('🖼️ 배경 테마'),
+        const SizedBox(height: 22),
+        _sectionTitle('🖼️', '배경 테마'),
         const SizedBox(height: 10),
         _buildThemeGrid(),
-        const SizedBox(height: 20),
-        _sectionTitle('🎨 캐릭터 색상'),
+        const SizedBox(height: 22),
+        _sectionTitle('🎨', '캐릭터 색상'),
         const SizedBox(height: 10),
         _buildColorGrid(),
       ]),
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Text(title,
-        style: const TextStyle(
-            fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFCC3366)));
+  Widget _sectionTitle(String emoji, String label) {
+    return Row(children: [
+      Container(
+        width: 4, height: 20,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFFB6D9), Color(0xFFD4AAFF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
+      const SizedBox(width: 8),
+      Text('$emoji $label',
+          style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFFCC3366))),
+    ]);
   }
 
-  // 악세서리 그리드
   Widget _buildAccessoryGrid() {
     final unlocked = List<String>.from(_custom['unlockedAcc'] ?? []);
     final equipped = _custom['accessory'] as String? ?? 'none';
@@ -306,7 +436,6 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
       mainAxisSpacing: 10,
       childAspectRatio: 0.85,
       children: [
-        // 없음 (해제)
         _customCard(
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -330,22 +459,26 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
               const SizedBox(height: 4),
               Text(acc.name,
                   style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFCC3366))),
             ]),
             isEquipped: isEquipped,
             isOwned: isOwned,
             isFree: false,
             cost: acc.cost,
-            onTap: () => isOwned ? _equipAccessory(acc.id) : _buyCustom('accessory', acc.id, acc.cost),
+            onTap: () => isOwned
+                ? _equipAccessory(acc.id)
+                : _buyCustom('accessory', acc.id, acc.cost),
           );
         }),
       ],
     );
   }
 
-  // 배경 테마 그리드
   Widget _buildThemeGrid() {
-    final unlocked = List<String>.from(_custom['unlockedThemes'] ?? ['default']);
+    final unlocked =
+        List<String>.from(_custom['unlockedThemes'] ?? ['default']);
     final equipped = _custom['theme'] as String? ?? 'default';
 
     return GridView.count(
@@ -361,36 +494,47 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
         return _customCard(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
-              width: 48,
-              height: 30,
+              width: 52,
+              height: 32,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: theme.colors,
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.white54),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white70, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colors.last.withValues(alpha: 0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 6),
             Text(theme.name,
                 style: const TextStyle(
-                    fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFCC3366)),
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFCC3366)),
                 textAlign: TextAlign.center),
           ]),
           isEquipped: isEquipped,
           isOwned: isOwned,
           isFree: theme.cost == 0,
           cost: theme.cost,
-          onTap: () => isOwned ? _equipTheme(theme.id) : _buyCustom('theme', theme.id, theme.cost),
+          onTap: () => isOwned
+              ? _equipTheme(theme.id)
+              : _buyCustom('theme', theme.id, theme.cost),
         );
       }).toList(),
     );
   }
 
-  // 색상 그리드
   Widget _buildColorGrid() {
-    final unlocked = List<String>.from(_custom['unlockedColors'] ?? ['pink']);
+    final unlocked =
+        List<String>.from(_custom['unlockedColors'] ?? ['pink']);
     final equipped = _custom['color'] as String? ?? 'pink';
 
     return GridView.count(
@@ -406,31 +550,42 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
         return _customCard(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
-                  color: c.color ?? const Color(0xFFFFD0E8),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2.5),
-                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)]),
+                color: c.color ?? const Color(0xFFFFD0E8),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 3),
+                boxShadow: [
+                  BoxShadow(
+                    color: (c.color ?? const Color(0xFFFFD0E8))
+                        .withValues(alpha: 0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 6),
             Text(c.name,
                 style: const TextStyle(
-                    fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFCC3366)),
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFCC3366)),
                 textAlign: TextAlign.center),
           ]),
           isEquipped: isEquipped,
           isOwned: isOwned,
           isFree: c.cost == 0,
           cost: c.cost,
-          onTap: () => isOwned ? _equipColor(c.id) : _buyCustom('color', c.id, c.cost),
+          onTap: () => isOwned
+              ? _equipColor(c.id)
+              : _buyCustom('color', c.id, c.cost),
         );
       }).toList(),
     );
   }
 
-  // 공통 커스터마이징 카드
   Widget _customCard({
     required Widget child,
     required bool isEquipped,
@@ -439,45 +594,112 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     int cost = 0,
     required VoidCallback onTap,
   }) {
+    if (isEquipped) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFB6D9), Color(0xFFD4AAFF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFFF85B3).withValues(alpha: 0.35),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF0F8),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Stack(children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: double.infinity),
+                    child,
+                    const SizedBox(height: 5),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFFFB6D9), Color(0xFFFF85B3)],
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text('장착중',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: 5,
+                  right: 5,
+                  child: Container(
+                    width: 18,
+                    height: 18,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF85B3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.check, size: 12, color: Colors.white),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: isEquipped
-              ? const Color(0xFFFFD0E8)
-              : Colors.white.withValues(alpha: 0.82),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-              color: isEquipped
-                  ? const Color(0xFFFF85B3)
-                  : Colors.pink[100]!,
-              width: isEquipped ? 2.5 : 1.5),
+          color: Colors.white.withValues(alpha: 0.85),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.pink[100]!, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.pink.withValues(alpha: 0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Stack(children: [
-          Center(child: Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(width: double.infinity),
               child,
-              const SizedBox(height: 6),
-              if (isEquipped)
+              const SizedBox(height: 5),
+              if (isOwned)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                      color: const Color(0xFFFF85B3),
-                      borderRadius: BorderRadius.circular(8)),
-                  child: const Text('장착중',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
-                )
-              else if (isOwned)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                      color: Colors.green[100],
-                      borderRadius: BorderRadius.circular(8)),
+                    color: Colors.green[50],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.green[300]!),
+                  ),
                   child: const Text('장착',
                       style: TextStyle(
-                          color: Colors.green, fontSize: 10, fontWeight: FontWeight.bold)),
+                          color: Colors.green,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold)),
                 )
               else
                 Row(mainAxisSize: MainAxisSize.min, children: [
@@ -485,14 +707,18 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
                   const SizedBox(width: 2),
                   Text('$cost',
                       style: const TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFCC3366))),
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFCC3366))),
                 ]),
             ],
-          )),
+          ),
           if (!isOwned && !isFree)
             const Positioned(
-                top: 6, right: 6,
-                child: Icon(Icons.lock_rounded, size: 14, color: Colors.grey)),
+              top: 5,
+              right: 5,
+              child: Icon(Icons.lock_rounded, size: 14, color: Colors.grey),
+            ),
         ]),
       ),
     );

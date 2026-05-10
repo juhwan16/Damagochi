@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <ellipse cx="100" cy="150" rx="44" ry="14" fill="#CC2020"/>
+  <ellipse cx="100" cy="146" rx="40" ry="9" fill="#E84040"/>
+  <path d="M 60 148 Q 100 142 140 148" stroke="white" stroke-width="2.5" fill="none" opacity="0.55"/>
+  <path d="M 63 158 Q 60 172 63 182 Q 66 188 71 185 Q 76 182 73 168 Z" fill="#CC2020"/>
+  <line x1="64" y1="168" x2="63" y2="176" stroke="white" stroke-width="2" opacity="0.55"/>
+</svg>

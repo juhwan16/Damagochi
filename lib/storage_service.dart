@@ -466,13 +466,23 @@ class StorageService {
 
   static String? accessoryAsset(String id) {
     switch (id) {
-      case 'crown':   return 'assets/svg/acc_crown.svg';
-      case 'ribbon':  return 'assets/svg/acc_ribbon.svg';
-      case 'hat':     return 'assets/svg/acc_hat.svg';
-      case 'glasses': return 'assets/svg/acc_glasses.svg';
-      case 'santa':   return 'assets/svg/acc_santa.svg';
-      case 'halo':    return 'assets/svg/acc_halo.svg';
-      default:        return null;
+      case 'ribbon':     return 'assets/svg/acc_ribbon.svg';
+      case 'monocle':    return 'assets/svg/acc_monocle.svg';
+      case 'glasses':    return 'assets/svg/acc_glasses.svg';
+      case 'bow_tie':    return 'assets/svg/acc_bow_tie.svg';
+      case 'hat':        return 'assets/svg/acc_hat.svg';
+      case 'flower':     return 'assets/svg/acc_flower.svg';
+      case 'santa':      return 'assets/svg/acc_santa.svg';
+      case 'pirate':     return 'assets/svg/acc_pirate.svg';
+      case 'headphones': return 'assets/svg/acc_headphones.svg';
+      case 'crown':      return 'assets/svg/acc_crown.svg';
+      case 'witch':      return 'assets/svg/acc_witch.svg';
+      case 'scarf':      return 'assets/svg/acc_scarf.svg';
+      case 'party':      return 'assets/svg/acc_party.svg';
+      case 'devil':      return 'assets/svg/acc_devil.svg';
+      case 'halo':       return 'assets/svg/acc_halo.svg';
+      case 'star':       return 'assets/svg/acc_star.svg';
+      default:           return null;
     }
   }
 

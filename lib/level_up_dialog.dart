@@ -41,11 +41,21 @@ class _LevelUpDialogState extends State<LevelUpDialog>
 
   String? _unlockMessage(int level) {
     switch (level) {
-      case 3: return '👓 안경 악세서리 해금!';
-      case 5: return '⭐ 별모자 해금!\n🍰 특별 간식 케어 해금!';
-      case 7: return '🎅 산타모자 해금!';
+      case 2:  return '🧐 단안경 해금!';
+      case 3:  return '👓 안경 해금!';
+      case 4:  return '🪢 나비넥타이 해금!';
+      case 5:  return '⭐ 별모자 해금!\n🍰 특별 간식 케어 해금!';
+      case 6:  return '🌸 꽃장식 해금!';
+      case 7:  return '🎅 산타모자 해금!';
+      case 8:  return '☠️ 해적모자 해금!';
+      case 9:  return '🎧 헤드폰 해금!';
       case 10: return '👑 왕관 해금!\n🧖 스파 케어 해금!';
+      case 11: return '🧙 마녀모자 해금!';
+      case 12: return '🧣 목도리 해금!';
+      case 13: return '🎉 파티모자 해금!';
+      case 14: return '😈 악마뿔 해금!';
       case 15: return '😇 천사링 해금!';
+      case 20: return '🌟 별왕관 해금!';
       default: return null;
     }
   }

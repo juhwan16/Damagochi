@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'storage_service.dart';
 import 'usage_service.dart';
 
@@ -220,8 +221,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Text('5시간', style: TextStyle(color: Colors.black38, fontSize: 12)),
         ]),
         const SizedBox(height: 12),
-        // 빠른 테스트 버튼
-        const Text('빠른 설정',
+        // 빠른 사용시간 설정
+        const Text('빠른 사용시간 설정',
             style: TextStyle(color: Color(0xFFCC3366), fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         Wrap(
@@ -234,8 +235,107 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _quickBtn('😢 2배 초과', (_goalMinutes * 2.0).round()),
           ],
         ),
+        const SizedBox(height: 16),
+        const Divider(color: Colors.pink, height: 1),
+        const SizedBox(height: 16),
+        // 코인 / 스탯 리셋
+        const Text('재화 & 스탯 조작',
+            style: TextStyle(color: Color(0xFFCC3366), fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _actionBtn('🪙 코인 999,999', Colors.amber[100]!, () async {
+              final prefs = await _prefs();
+              await prefs.setInt('pet_coins', 999999);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text('🪙 코인 999,999 지급!',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  backgroundColor: Colors.amber[700],
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ));
+              }
+            }),
+            _actionBtn('❤️ 스탯 MAX', Colors.pink[100]!, () async {
+              final prefs = await _prefs();
+              await prefs.setInt('pet_hunger', 100);
+              await prefs.setInt('pet_happiness', 100);
+              await prefs.setInt('pet_energy', 100);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text('❤️ 모든 스탯 MAX!',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  backgroundColor: const Color(0xFFFF85B3),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ));
+              }
+            }),
+            _actionBtn('⬆️ XP +500', Colors.purple[100]!, () async {
+              final prefs = await _prefs();
+              int xp = (prefs.getInt('pet_xp') ?? 0) + 500;
+              int level = prefs.getInt('pet_level') ?? 1;
+              while (xp >= level * 100) { xp -= level * 100; level++; }
+              await prefs.setInt('pet_xp', xp);
+              await prefs.setInt('pet_level', level);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('⬆️ XP +500 (현재 Lv.$level)',
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  backgroundColor: Colors.purple[400],
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ));
+              }
+            }),
+            _actionBtn('🔄 데이터 초기화', Colors.red[100]!, () async {
+              final prefs = await _prefs();
+              await prefs.remove('pet_coins');
+              await prefs.remove('pet_xp');
+              await prefs.remove('pet_level');
+              await prefs.remove('pet_hunger');
+              await prefs.remove('pet_happiness');
+              await prefs.remove('pet_energy');
+              await prefs.remove('current_streak');
+              await prefs.remove('total_goal_days');
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text('🔄 데이터 초기화 완료',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  backgroundColor: Colors.red[400],
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ));
+              }
+            }),
+          ],
+        ),
       ],
     ]);
+  }
+
+  Future<dynamic> _prefs() async {
+    // ignore: depend_on_referenced_packages
+    return await SharedPreferences.getInstance();
+  }
+
+  Widget _actionBtn(String label, Color color, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.pink[200]!)),
+        child: Text(label,
+            style: const TextStyle(
+                fontSize: 12, color: Color(0xFFCC3366), fontWeight: FontWeight.w600)),
+      ),
+    );
   }
 
   Widget _quickBtn(String label, int minutes) {

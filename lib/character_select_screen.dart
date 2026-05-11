@@ -313,9 +313,8 @@ class _FilledSlot extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      onLongPress: onDelete,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 16, 14, 16),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.92),
           borderRadius: BorderRadius.circular(22),
@@ -332,6 +331,7 @@ class _FilledSlot extends StatelessWidget {
           ],
         ),
         child: Row(children: [
+          // Character avatar
           Container(
             width: 64,
             height: 64,
@@ -356,6 +356,7 @@ class _FilledSlot extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
+          // Name + level
           Expanded(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,8 +390,25 @@ class _FilledSlot extends StatelessWidget {
                   ]),
                 ]),
           ),
+          // Play button
           const Icon(Icons.arrow_forward_ios_rounded,
               size: 18, color: Color(0xFFD4914A)),
+          const SizedBox(width: 8),
+          // Delete button
+          GestureDetector(
+            onTap: onDelete,
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.red[200]!, width: 1.5),
+              ),
+              child: Icon(Icons.delete_outline_rounded,
+                  size: 18, color: Colors.red[400]),
+            ),
+          ),
         ]),
       ),
     );

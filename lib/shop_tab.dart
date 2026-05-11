@@ -52,22 +52,22 @@ const _items = [
 ];
 
 const _accessories = [
-  _AccItem('ribbon',     '🎀', '리본',     60,  minLevel: 1),
-  _AccItem('monocle',    '🧐', '단안경',   65,  minLevel: 2),
-  _AccItem('glasses',    '👓', '안경',     70,  minLevel: 3),
-  _AccItem('bow_tie',    '🪢', '나비넥타이', 75, minLevel: 4),
-  _AccItem('hat',        '⭐', '별모자',   80,  minLevel: 5),
-  _AccItem('flower',     '🌸', '꽃장식',   85,  minLevel: 6),
-  _AccItem('santa',      '🎅', '산타모자', 90,  minLevel: 7),
-  _AccItem('pirate',     '☠️', '해적모자', 100, minLevel: 8),
-  _AccItem('headphones', '🎧', '헤드폰',   110, minLevel: 9),
-  _AccItem('crown',      '👑', '왕관',     120, minLevel: 10),
-  _AccItem('witch',      '🧙', '마녀모자', 130, minLevel: 11),
-  _AccItem('scarf',      '🧣', '목도리',   135, minLevel: 12),
-  _AccItem('party',      '🎉', '파티모자', 140, minLevel: 13),
-  _AccItem('devil',      '😈', '악마뿔',   155, minLevel: 14),
-  _AccItem('halo',       '😇', '천사링',   150, minLevel: 15),
-  _AccItem('star',       '🌟', '별왕관',   200, minLevel: 20),
+  _AccItem('ribbon',     '🎀', '리본',       15, minLevel: 1),
+  _AccItem('monocle',    '🧐', '단안경',     15, minLevel: 2),
+  _AccItem('glasses',    '👓', '안경',       15, minLevel: 3),
+  _AccItem('bow_tie',    '🪢', '나비넥타이', 15, minLevel: 4),
+  _AccItem('hat',        '⭐', '별모자',     15, minLevel: 5),
+  _AccItem('flower',     '🌸', '꽃장식',     15, minLevel: 6),
+  _AccItem('santa',      '🎅', '산타모자',   15, minLevel: 7),
+  _AccItem('pirate',     '☠️', '해적모자',   15, minLevel: 8),
+  _AccItem('headphones', '🎧', '헤드폰',     15, minLevel: 9),
+  _AccItem('crown',      '👑', '왕관',       15, minLevel: 10),
+  _AccItem('witch',      '🧙', '마녀모자',   15, minLevel: 11),
+  _AccItem('scarf',      '🧣', '목도리',     15, minLevel: 12),
+  _AccItem('party',      '🎉', '파티모자',   15, minLevel: 13),
+  _AccItem('devil',      '😈', '악마뿔',     15, minLevel: 14),
+  _AccItem('halo',       '😇', '천사링',     15, minLevel: 15),
+  _AccItem('star',       '🌟', '별왕관',     15, minLevel: 20),
 ];
 
 final _themes = [

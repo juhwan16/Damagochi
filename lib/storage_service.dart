@@ -19,6 +19,13 @@ class StorageService {
   // Per-slot key prefix
   static String get _p => 's${_slot}_';
 
+  // 3 character types (randomly assigned on creation)
+  static const List<Map<String, String>> charTypes = [
+    {'id': 'yellow', 'name': '노랑이', 'emoji': '🐥', 'color': 'pink'},
+    {'id': 'mint',   'name': '민트이', 'emoji': '🩵', 'color': 'mint'},
+    {'id': 'sky',    'name': '하늘이', 'emoji': '🩶', 'color': 'sky'},
+  ];
+
   // Per-slot keys
   static String get _goalKey       => '${_p}goal_minutes';
   static String get _levelKey      => '${_p}pet_level';
@@ -54,9 +61,19 @@ class StorageService {
     return (name == null || name.isEmpty) ? null : name;
   }
 
-  static Future<void> createSlot(int slot, String name) async {
+  static Future<void> createSlot(int slot, String name, int typeIndex) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_slotNameKey(slot), name);
+    await prefs.setInt('s${slot}_char_type', typeIndex);
+    final charColor = charTypes[typeIndex]['color']!;
+    await prefs.setString('s${slot}_equipped_color', charColor);
+    final unlocked = {'pink', charColor};
+    await prefs.setString('s${slot}_unlocked_colors', unlocked.join(','));
+  }
+
+  static Future<int> getCharTypeIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('${_p}char_type') ?? 0;
   }
 
   static Future<void> deleteSlot(int slot) async {
@@ -70,14 +87,15 @@ class StorageService {
     }
   }
 
-  // Returns list of (slot, name, level) for all 3 slots
-  static Future<List<(int, String?, int)>> listSlots() async {
+  // Returns list of (slot, name, level, charTypeIndex) for all 3 slots
+  static Future<List<(int, String?, int, int)>> listSlots() async {
     final prefs = await SharedPreferences.getInstance();
     return List.generate(3, (i) {
       final slot = i + 1;
       final name = prefs.getString(_slotNameKey(slot));
       final level = prefs.getInt('s${slot}_pet_level') ?? 1;
-      return (slot, (name == null || name.isEmpty) ? null : name, level);
+      final charType = prefs.getInt('s${slot}_char_type') ?? 0;
+      return (slot, (name == null || name.isEmpty) ? null : name, level, charType);
     });
   }
 

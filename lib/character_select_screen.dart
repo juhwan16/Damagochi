@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'storage_service.dart';
 import 'main_screen.dart';
@@ -11,7 +12,7 @@ class CharacterSelectScreen extends StatefulWidget {
 }
 
 class _CharacterSelectScreenState extends State<CharacterSelectScreen> {
-  List<(int, String?, int)> _slots = [];
+  List<(int, String?, int, int)> _slots = [];
   bool _loading = true;
 
   @override
@@ -37,12 +38,102 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen> {
   Future<void> _createCharacter(int slot) async {
     final name = await _showNameDialog();
     if (name == null || name.trim().isEmpty) return;
-    await StorageService.createSlot(slot, name.trim());
+
+    final typeIndex = Random().nextInt(3);
+    await StorageService.createSlot(slot, name.trim(), typeIndex);
+
+    if (!mounted) return;
+    await _showRevealDialog(StorageService.charTypes[typeIndex], name.trim());
+
     StorageService.setActiveSlot(slot);
     if (!mounted) return;
     await Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const MainScreen()),
+    );
+  }
+
+  Future<void> _showRevealDialog(Map<String, String> type, String name) async {
+    const gradients = {
+      'pink': [Color(0xFFFFE082), Color(0xFFFFCA28)],
+      'mint': [Color(0xFFB2DFDB), Color(0xFF4DB6AC)],
+      'sky':  [Color(0xFFBBDEFB), Color(0xFF64B5F6)],
+    };
+    final colors = gradients[type['color']] ?? gradients['pink']!;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: colors,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: colors.last.withValues(alpha: 0.5),
+                blurRadius: 24,
+                spreadRadius: 4,
+              ),
+            ],
+          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Text('🎲 캐릭터 뽑기!',
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+            const SizedBox(height: 20),
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.3),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white54, width: 3),
+              ),
+              child: Center(
+                child: Text(type['emoji']!,
+                    style: const TextStyle(fontSize: 52)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(type['name']!,
+                style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+            const SizedBox(height: 6),
+            Text('$name의 친구가 됐어요! 💕',
+                style:
+                    const TextStyle(fontSize: 14, color: Colors.white70)),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF5A3210),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 0,
+                ),
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('모험 시작! 🎮',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16)),
+              ),
+            ),
+          ]),
+        ),
+      ),
     );
   }
 
@@ -82,7 +173,8 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen> {
           autofocus: true,
           decoration: InputDecoration(
             hintText: '이름을 입력하세요',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
           onSubmitted: (_) => Navigator.pop(ctx, controller.text),
         ),
@@ -115,7 +207,6 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen> {
                   child: CircularProgressIndicator(color: Colors.white))
               : Column(children: [
                   const SizedBox(height: 36),
-                  // Title
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
                     padding: const EdgeInsets.symmetric(
@@ -160,19 +251,20 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 28),
-                  // Slot cards
                   Expanded(
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       itemCount: 3,
-                      separatorBuilder: (_, __) => const SizedBox(height: 14),
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: 14),
                       itemBuilder: (_, i) {
-                        final (slot, name, level) = _slots[i];
+                        final (slot, name, level, charType) = _slots[i];
                         return name != null
                             ? _FilledSlot(
                                 slot: slot,
                                 name: name,
                                 level: level,
+                                charTypeIndex: charType,
                                 onTap: () => _selectSlot(slot),
                                 onDelete: () => _deleteSlot(slot, name),
                               )
@@ -195,6 +287,7 @@ class _FilledSlot extends StatelessWidget {
   final int slot;
   final String name;
   final int level;
+  final int charTypeIndex;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
@@ -202,12 +295,22 @@ class _FilledSlot extends StatelessWidget {
     required this.slot,
     required this.name,
     required this.level,
+    required this.charTypeIndex,
     required this.onTap,
     required this.onDelete,
   });
 
+  static const _typeGradients = [
+    [Color(0xFFFFE082), Color(0xFFFFCA28)],
+    [Color(0xFFB2DFDB), Color(0xFF4DB6AC)],
+    [Color(0xFFBBDEFB), Color(0xFF64B5F6)],
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final charType = StorageService.charTypes[charTypeIndex];
+    final gradient = _typeGradients[charTypeIndex];
+
     return GestureDetector(
       onTap: onTap,
       onLongPress: onDelete,
@@ -229,27 +332,27 @@ class _FilledSlot extends StatelessWidget {
           ],
         ),
         child: Row(children: [
-          // Duck emoji in circle
           Container(
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFFE082), Color(0xFFFFCA28)],
+              gradient: LinearGradient(
+                colors: gradient,
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFFCA28).withValues(alpha: 0.4),
+                  color: gradient.last.withValues(alpha: 0.4),
                   blurRadius: 10,
                   offset: const Offset(0, 3),
                 ),
               ],
             ),
-            child: const Center(
-              child: Text('🦆', style: TextStyle(fontSize: 30)),
+            child: Center(
+              child: Text(charType['emoji']!,
+                  style: const TextStyle(fontSize: 30)),
             ),
           ),
           const SizedBox(width: 16),
@@ -280,9 +383,9 @@ class _FilledSlot extends StatelessWidget {
                               color: Colors.white)),
                     ),
                     const SizedBox(width: 8),
-                    Text('슬롯 $slot',
+                    Text(charType['name']!,
                         style: const TextStyle(
-                            fontSize: 12, color: Colors.black38)),
+                            fontSize: 12, color: Colors.black45)),
                   ]),
                 ]),
           ),
@@ -322,7 +425,8 @@ class _EmptySlot extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.6),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.add_rounded, size: 32, color: Color(0xFFD4914A)),
+            child: const Icon(Icons.add_rounded,
+                size: 32, color: Color(0xFFD4914A)),
           ),
           const SizedBox(width: 16),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -331,7 +435,7 @@ class _EmptySlot extends StatelessWidget {
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF5A3210))),
-            Text('슬롯 $slot',
+            Text('슬롯 $slot · 랜덤 캐릭터 뽑기 🎲',
                 style: const TextStyle(fontSize: 12, color: Colors.black38)),
           ]),
         ]),

@@ -32,14 +32,9 @@ class PetWidget extends StatelessWidget {
     Widget character = SvgPicture.asset(_svgAsset, width: size, height: size);
 
     if (characterColor != null) {
-      character = RepaintBoundary(
-        child: ColorFiltered(
-          colorFilter: ColorFilter.mode(
-            characterColor!.withOpacity(0.55),
-            BlendMode.srcATop,
-          ),
-          child: character,
-        ),
+      character = ColorFiltered(
+        colorFilter: ColorFilter.mode(characterColor!, BlendMode.modulate),
+        child: character,
       );
     }
 

@@ -7,6 +7,7 @@ class PetWidget extends StatelessWidget {
   final double size;
   final String? accessoryAsset;
   final Color? characterColor;
+  final String petPrefix;
 
   const PetWidget({
     super.key,
@@ -14,14 +15,15 @@ class PetWidget extends StatelessWidget {
     this.size = 210,
     this.accessoryAsset,
     this.characterColor,
+    this.petPrefix = 'pet',
   });
 
   String get _svgAsset {
     switch (state) {
-      case PetState.happy: return 'assets/svg/pet_happy.svg';
-      case PetState.normal: return 'assets/svg/pet_normal.svg';
-      case PetState.tired: return 'assets/svg/pet_tired.svg';
-      case PetState.sick: return 'assets/svg/pet_sick.svg';
+      case PetState.happy: return 'assets/svg/${petPrefix}_happy.svg';
+      case PetState.normal: return 'assets/svg/${petPrefix}_normal.svg';
+      case PetState.tired: return 'assets/svg/${petPrefix}_tired.svg';
+      case PetState.sick: return 'assets/svg/${petPrefix}_sick.svg';
     }
   }
 

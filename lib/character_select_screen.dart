@@ -55,11 +55,11 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen> {
 
   Future<void> _showRevealDialog(Map<String, String> type, String name) async {
     const gradients = {
-      'pink': [Color(0xFFFFE082), Color(0xFFFFCA28)],
-      'mint': [Color(0xFFB2DFDB), Color(0xFF4DB6AC)],
-      'sky':  [Color(0xFFBBDEFB), Color(0xFF64B5F6)],
+      'yellow_duck': [Color(0xFFFFE082), Color(0xFFFFCA28)],
+      'white_duck':  [Color(0xFFF5F5F5), Color(0xFFE0E0E0)],
+      'white_dog':   [Color(0xFFFFECB3), Color(0xFFFFCC80)],
     };
-    final colors = gradients[type['color']] ?? gradients['pink']!;
+    final colors = gradients[type['id']] ?? gradients['yellow_duck']!;
 
     await showDialog(
       context: context,
@@ -301,9 +301,9 @@ class _FilledSlot extends StatelessWidget {
   });
 
   static const _typeGradients = [
-    [Color(0xFFFFE082), Color(0xFFFFCA28)],
-    [Color(0xFFB2DFDB), Color(0xFF4DB6AC)],
-    [Color(0xFFBBDEFB), Color(0xFF64B5F6)],
+    [Color(0xFFFFE082), Color(0xFFFFCA28)], // 노랑이 (yellow duck)
+    [Color(0xFFF5F5F5), Color(0xFFE0E0E0)], // 흰둥이 (white duck)
+    [Color(0xFFFFECB3), Color(0xFFFFCC80)], // 뽀삐 (white dog)
   ];
 
   @override

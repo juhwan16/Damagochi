@@ -21,10 +21,15 @@ class StorageService {
 
   // 3 character types (randomly assigned on creation)
   static const List<Map<String, String>> charTypes = [
-    {'id': 'yellow', 'name': '노랑이', 'emoji': '🐥', 'color': 'pink'},
-    {'id': 'mint',   'name': '민트이', 'emoji': '🩵', 'color': 'mint'},
-    {'id': 'sky',    'name': '하늘이', 'emoji': '🩶', 'color': 'sky'},
+    {'id': 'yellow_duck', 'name': '노랑이', 'emoji': '🐥', 'color': 'pink',   'prefix': 'pet'},
+    {'id': 'white_duck',  'name': '흰둥이', 'emoji': '🐣', 'color': 'pink',   'prefix': 'pet2'},
+    {'id': 'white_dog',   'name': '뽀삐',   'emoji': '🐶', 'color': 'pink',   'prefix': 'pet3'},
   ];
+
+  static Future<String> getSvgPrefix() async {
+    final idx = await getCharTypeIndex();
+    return charTypes[idx]['prefix']!;
+  }
 
   // Per-slot keys
   static String get _goalKey       => '${_p}goal_minutes';

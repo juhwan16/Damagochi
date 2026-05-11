@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Arms behind body -->
+  <ellipse cx="36" cy="146" rx="22" ry="16" fill="white" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(30 36 146)"/>
+  <ellipse cx="164" cy="146" rx="22" ry="16" fill="white" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(-30 164 146)"/>
+  <!-- Main body -->
+  <ellipse cx="100" cy="112" rx="65" ry="72" fill="white" stroke="#2A2A2A" stroke-width="4"/>
+  <!-- Brown spot on head -->
+  <ellipse cx="112" cy="44" rx="24" ry="20" fill="#A07040" stroke="#2A2A2A" stroke-width="2.5" transform="rotate(12 112 44)"/>
+  <!-- Pink blush -->
+  <ellipse cx="65" cy="98" rx="16" ry="11" fill="#FFB6C1" opacity="0.8"/>
+  <ellipse cx="135" cy="98" rx="16" ry="11" fill="#FFB6C1" opacity="0.8"/>
+  <!-- Small close-set eyes -->
+  <circle cx="91" cy="83" r="5" fill="#2A2A2A"/>
+  <circle cx="109" cy="83" r="5" fill="#2A2A2A"/>
+  <circle cx="92.5" cy="81.5" r="1.8" fill="white"/>
+  <circle cx="110.5" cy="81.5" r="1.8" fill="white"/>
+  <!-- Tiny pink nose -->
+  <ellipse cx="100" cy="97" rx="5" ry="4" fill="#FFAAAA"/>
+  <!-- Small smile -->
+  <path d="M 93 103 Q 100 109 107 103" stroke="#2A2A2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Green collar -->
+  <path d="M 68 130 Q 100 122 132 130 Q 100 138 68 130 Z" fill="#4CAF50" stroke="#2A2A2A" stroke-width="2.5"/>
+  <!-- Watermelon badge on collar -->
+  <circle cx="100" cy="132" r="11" fill="#FF4444" stroke="#2A2A2A" stroke-width="2"/>
+  <path d="M 91 124 Q 100 118 109 124" fill="#4CAF50" stroke="#2A2A2A" stroke-width="1.5"/>
+  <ellipse cx="97" cy="133" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(-10 97 133)"/>
+  <ellipse cx="103" cy="134" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(10 103 134)"/>
+  <!-- Feet/paws -->
+  <ellipse cx="83" cy="183" rx="17" ry="9" fill="white" stroke="#2A2A2A" stroke-width="3"/>
+  <ellipse cx="117" cy="183" rx="17" ry="9" fill="white" stroke="#2A2A2A" stroke-width="3"/>
+</svg>

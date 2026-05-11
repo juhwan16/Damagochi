@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Arms limp -->
+  <ellipse cx="36" cy="154" rx="22" ry="16" fill="#F0FFF0" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(16 36 154)"/>
+  <ellipse cx="164" cy="154" rx="22" ry="16" fill="#F0FFF0" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(-16 164 154)"/>
+  <!-- Main body (pale) -->
+  <ellipse cx="100" cy="112" rx="65" ry="72" fill="#F0FFF0" stroke="#2A2A2A" stroke-width="4"/>
+  <!-- Brown spot (pale) -->
+  <ellipse cx="112" cy="44" rx="24" ry="20" fill="#C4A070" stroke="#2A2A2A" stroke-width="2.5" transform="rotate(12 112 44)"/>
+  <!-- Pale blush (green tint) -->
+  <ellipse cx="65" cy="98" rx="16" ry="11" fill="#C8E6C9" opacity="0.6"/>
+  <ellipse cx="135" cy="98" rx="16" ry="11" fill="#C8E6C9" opacity="0.6"/>
+  <!-- X eyes -->
+  <line x1="83" y1="76" x2="97" y2="90" stroke="#2A2A2A" stroke-width="4" stroke-linecap="round"/>
+  <line x1="97" y1="76" x2="83" y2="90" stroke="#2A2A2A" stroke-width="4" stroke-linecap="round"/>
+  <line x1="103" y1="76" x2="117" y2="90" stroke="#2A2A2A" stroke-width="4" stroke-linecap="round"/>
+  <line x1="117" y1="76" x2="103" y2="90" stroke="#2A2A2A" stroke-width="4" stroke-linecap="round"/>
+  <!-- Wavy mouth -->
+  <path d="M 90 106 Q 95 110 100 106 Q 105 102 110 106" stroke="#2A2A2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Sweat drop -->
+  <path d="M 140 68 C 136 59 132 72 140 76 C 148 72 144 59 140 68 Z" fill="#AAD8F0"/>
+  <!-- Green collar -->
+  <path d="M 68 130 Q 100 122 132 130 Q 100 138 68 130 Z" fill="#4CAF50" stroke="#2A2A2A" stroke-width="2.5"/>
+  <circle cx="100" cy="132" r="11" fill="#FF4444" stroke="#2A2A2A" stroke-width="2"/>
+  <path d="M 91 124 Q 100 118 109 124" fill="#4CAF50" stroke="#2A2A2A" stroke-width="1.5"/>
+  <ellipse cx="97" cy="133" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(-10 97 133)"/>
+  <ellipse cx="103" cy="134" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(10 103 134)"/>
+  <!-- Feet -->
+  <ellipse cx="83" cy="183" rx="17" ry="9" fill="#F0FFF0" stroke="#2A2A2A" stroke-width="3"/>
+  <ellipse cx="117" cy="183" rx="17" ry="9" fill="#F0FFF0" stroke="#2A2A2A" stroke-width="3"/>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Arms droopy -->
+  <ellipse cx="36" cy="150" rx="22" ry="16" fill="white" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(20 36 150)"/>
+  <ellipse cx="164" cy="150" rx="22" ry="16" fill="white" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(-20 164 150)"/>
+  <!-- Main body -->
+  <ellipse cx="100" cy="112" rx="65" ry="72" fill="white" stroke="#2A2A2A" stroke-width="4"/>
+  <!-- Brown spot (tilted) -->
+  <ellipse cx="112" cy="46" rx="24" ry="20" fill="#A07040" stroke="#2A2A2A" stroke-width="2.5" transform="rotate(20 112 46)"/>
+  <!-- Faded blush -->
+  <ellipse cx="65" cy="98" rx="16" ry="11" fill="#FFB6C1" opacity="0.4"/>
+  <ellipse cx="135" cy="98" rx="16" ry="11" fill="#FFB6C1" opacity="0.4"/>
+  <!-- Droopy eyes with eyelids -->
+  <circle cx="91" cy="85" r="5" fill="#2A2A2A"/>
+  <circle cx="109" cy="85" r="5" fill="#2A2A2A"/>
+  <ellipse cx="91" cy="82" rx="6.5" ry="5" fill="white"/>
+  <ellipse cx="109" cy="82" rx="6.5" ry="5" fill="white"/>
+  <!-- Tiny nose -->
+  <ellipse cx="100" cy="97" rx="5" ry="4" fill="#FFAAAA"/>
+  <!-- Sad small mouth -->
+  <path d="M 94 106 Q 100 103 106 106" stroke="#2A2A2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Zzz -->
+  <circle cx="132" cy="58" r="5" fill="white" stroke="#AAAAAA" stroke-width="1.5"/>
+  <text x="129" y="62" font-size="7" fill="#AAAAAA" font-weight="bold">z</text>
+  <circle cx="142" cy="47" r="6" fill="white" stroke="#BBBBBB" stroke-width="1.5"/>
+  <text x="138.5" y="51.5" font-size="8" fill="#BBBBBB" font-weight="bold">z</text>
+  <!-- Green collar -->
+  <path d="M 68 130 Q 100 122 132 130 Q 100 138 68 130 Z" fill="#4CAF50" stroke="#2A2A2A" stroke-width="2.5"/>
+  <circle cx="100" cy="132" r="11" fill="#FF4444" stroke="#2A2A2A" stroke-width="2"/>
+  <path d="M 91 124 Q 100 118 109 124" fill="#4CAF50" stroke="#2A2A2A" stroke-width="1.5"/>
+  <ellipse cx="97" cy="133" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(-10 97 133)"/>
+  <ellipse cx="103" cy="134" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(10 103 134)"/>
+  <!-- Feet -->
+  <ellipse cx="83" cy="183" rx="17" ry="9" fill="white" stroke="#2A2A2A" stroke-width="3"/>
+  <ellipse cx="117" cy="183" rx="17" ry="9" fill="white" stroke="#2A2A2A" stroke-width="3"/>
+</svg>

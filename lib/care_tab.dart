@@ -22,6 +22,7 @@ class _CareTabState extends State<CareTab> {
   int _currentLevel = 1;
   String? _accessoryAsset;
   Color? _characterColor;
+  String _petPrefix = 'pet';
 
   Map<String, int> _cooldowns = {
     'feed': 0,
@@ -68,6 +69,7 @@ class _CareTabState extends State<CareTab> {
         StorageService.accessoryAsset(custom['accessory'] as String);
     _characterColor =
         StorageService.characterColor(custom['color'] as String);
+    _petPrefix = await StorageService.getSvgPrefix();
 
     final feeds = <String, int>{};
     for (final action in ['feed', 'play', 'sleep', 'clean', 'special_snack', 'spa']) {
@@ -183,6 +185,7 @@ class _CareTabState extends State<CareTab> {
           size: 150,
           accessoryAsset: _accessoryAsset,
           characterColor: _characterColor,
+          petPrefix: _petPrefix,
         ),
         const SizedBox(height: 8),
         Text(pet.statusMessage,

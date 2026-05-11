@@ -30,6 +30,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
   bool _loading = true;
   String? _accessoryAsset;
   Color? _characterColor;
+  String _petPrefix = 'pet';
   Timer? _timer;
 
   @override
@@ -77,6 +78,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
         StorageService.accessoryAsset(custom['accessory'] as String);
     _characterColor =
         StorageService.characterColor(custom['color'] as String);
+    _petPrefix = await StorageService.getSvgPrefix();
 
     final isTestMode = await StorageService.isTestMode();
     if (isTestMode || _hasPermission || await UsageService.hasPermission()) {
@@ -375,6 +377,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
             state: pet.state,
             accessoryAsset: _accessoryAsset,
             characterColor: _characterColor,
+            petPrefix: _petPrefix,
           ),
         ]),
         const SizedBox(height: 12),

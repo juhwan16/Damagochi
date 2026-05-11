@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Arms raised -->
+  <ellipse cx="32" cy="136" rx="22" ry="16" fill="white" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(52 32 136)"/>
+  <ellipse cx="168" cy="136" rx="22" ry="16" fill="white" stroke="#2A2A2A" stroke-width="3.5" transform="rotate(-52 168 136)"/>
+  <!-- Main body -->
+  <ellipse cx="100" cy="112" rx="65" ry="72" fill="white" stroke="#2A2A2A" stroke-width="4"/>
+  <!-- Brown spot -->
+  <ellipse cx="112" cy="44" rx="24" ry="20" fill="#A07040" stroke="#2A2A2A" stroke-width="2.5" transform="rotate(12 112 44)"/>
+  <!-- Big blush -->
+  <ellipse cx="62" cy="98" rx="18" ry="13" fill="#FFB6C1" opacity="0.9"/>
+  <ellipse cx="138" cy="98" rx="18" ry="13" fill="#FFB6C1" opacity="0.9"/>
+  <!-- Arc eyes (^.^) -->
+  <path d="M 80 86 Q 91 72 102 86" stroke="#2A2A2A" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M 98 86 Q 109 72 120 86" stroke="#2A2A2A" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Open smile -->
+  <path d="M 88 104 Q 100 116 112 104" stroke="#2A2A2A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Green collar -->
+  <path d="M 68 130 Q 100 122 132 130 Q 100 138 68 130 Z" fill="#4CAF50" stroke="#2A2A2A" stroke-width="2.5"/>
+  <!-- Watermelon badge -->
+  <circle cx="100" cy="132" r="11" fill="#FF4444" stroke="#2A2A2A" stroke-width="2"/>
+  <path d="M 91 124 Q 100 118 109 124" fill="#4CAF50" stroke="#2A2A2A" stroke-width="1.5"/>
+  <ellipse cx="97" cy="133" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(-10 97 133)"/>
+  <ellipse cx="103" cy="134" rx="1.8" ry="2.8" fill="#1A1A1A" transform="rotate(10 103 134)"/>
+  <!-- Feet -->
+  <ellipse cx="83" cy="183" rx="17" ry="9" fill="white" stroke="#2A2A2A" stroke-width="3"/>
+  <ellipse cx="117" cy="183" rx="17" ry="9" fill="white" stroke="#2A2A2A" stroke-width="3"/>
+</svg>

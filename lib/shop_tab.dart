@@ -15,8 +15,7 @@ class _Item {
 class _AccItem {
   final String id, emoji, name;
   final int cost;
-  final int minLevel;
-  const _AccItem(this.id, this.emoji, this.name, this.cost, {this.minLevel = 1});
+  const _AccItem(this.id, this.emoji, this.name, this.cost);
 }
 
 class _ThemeItem {
@@ -52,22 +51,22 @@ const _items = [
 ];
 
 const _accessories = [
-  _AccItem('ribbon',     '🎀', '리본',       15, minLevel: 1),
-  _AccItem('monocle',    '🧐', '단안경',     15, minLevel: 2),
-  _AccItem('glasses',    '👓', '안경',       15, minLevel: 3),
-  _AccItem('bow_tie',    '🪢', '나비넥타이', 15, minLevel: 4),
-  _AccItem('hat',        '⭐', '별모자',     15, minLevel: 5),
-  _AccItem('flower',     '🌸', '꽃장식',     15, minLevel: 6),
-  _AccItem('santa',      '🎅', '산타모자',   15, minLevel: 7),
-  _AccItem('pirate',     '☠️', '해적모자',   15, minLevel: 8),
-  _AccItem('headphones', '🎧', '헤드폰',     15, minLevel: 9),
-  _AccItem('crown',      '👑', '왕관',       15, minLevel: 10),
-  _AccItem('witch',      '🧙', '마녀모자',   15, minLevel: 11),
-  _AccItem('scarf',      '🧣', '목도리',     15, minLevel: 12),
-  _AccItem('party',      '🎉', '파티모자',   15, minLevel: 13),
-  _AccItem('devil',      '😈', '악마뿔',     15, minLevel: 14),
-  _AccItem('halo',       '😇', '천사링',     15, minLevel: 15),
-  _AccItem('star',       '🌟', '별왕관',     15, minLevel: 20),
+  _AccItem('ribbon',     '🎀', '리본',       15),
+  _AccItem('monocle',    '🧐', '단안경',     15),
+  _AccItem('glasses',    '👓', '안경',       15),
+  _AccItem('bow_tie',    '🪢', '나비넥타이', 15),
+  _AccItem('hat',        '⭐', '별모자',     15),
+  _AccItem('flower',     '🌸', '꽃장식',     15),
+  _AccItem('santa',      '🎅', '산타모자',   15),
+  _AccItem('pirate',     '☠️', '해적모자',   15),
+  _AccItem('headphones', '🎧', '헤드폰',     15),
+  _AccItem('crown',      '👑', '왕관',       15),
+  _AccItem('witch',      '🧙', '마녀모자',   15),
+  _AccItem('scarf',      '🧣', '목도리',     15),
+  _AccItem('party',      '🎉', '파티모자',   15),
+  _AccItem('devil',      '😈', '악마뿔',     15),
+  _AccItem('halo',       '😇', '천사링',     15),
+  _AccItem('star',       '🌟', '별왕관',     15),
 ];
 
 final _themes = [
@@ -464,27 +463,6 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
           isOwned: true,
         ),
         ..._accessories.map((acc) {
-          final isLevelLocked = _currentLevel < acc.minLevel;
-          if (isLevelLocked) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey[300]!, width: 1.5),
-              ),
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(acc.emoji, style: TextStyle(fontSize: 30, color: Colors.grey[400])),
-                const SizedBox(height: 4),
-                Text(acc.name, style: TextStyle(fontSize: 11, color: Colors.grey[400], fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.lock_rounded, size: 12, color: Colors.grey[400]),
-                  const SizedBox(width: 2),
-                  Text('Lv.${acc.minLevel}', style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.bold)),
-                ]),
-              ]),
-            );
-          }
           final isOwned = unlocked.contains(acc.id);
           final isEquipped = equipped == acc.id;
           return _customCard(

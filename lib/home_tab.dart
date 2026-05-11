@@ -224,11 +224,7 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
         children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Text(pet.tierName,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black54)),
+              _buildBadge(pet.level),
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -297,6 +293,33 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
           ]),
         ],
       ),
+    );
+  }
+
+  Widget _buildBadge(int level) {
+    final badge = StorageService.levelBadge(level);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: badge.gradient),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: badge.gradient.last.withValues(alpha: 0.35),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Text(badge.emoji, style: const TextStyle(fontSize: 13)),
+        const SizedBox(width: 4),
+        Text(badge.name,
+            style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
+      ]),
     );
   }
 

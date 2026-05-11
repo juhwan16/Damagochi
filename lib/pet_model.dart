@@ -70,15 +70,14 @@ class PetModel {
     }
   }
 
-  int get xpToNextLevel => level * 100;
+  int get xpToNextLevel => level * 50;
   double get xpProgress => xp / xpToNextLevel;
 
   String get tierName {
-    if (level < 3) return '🐣 새싹';
-    if (level < 6) return '🌱 초보자';
-    if (level < 10) return '🌿 성장중';
-    if (level < 15) return '🌸 능숙자';
-    if (level < 20) return '🌟 전문가';
-    return '👑 마스터';
+    if (level < 5) return '🌱 새싹';
+    if (level < 10) return '⭐ 모험가';
+    if (level < 15) return '🌟 영웅';
+    if (level < 20) return '👑 왕관';
+    return '💎 전설';
   }
 }

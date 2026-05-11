@@ -207,8 +207,8 @@ class StorageService {
     int coins = (prefs.getInt(_coinsKey) ?? 0) + coinGain;
     int level = prefs.getInt(_levelKey) ?? 1;
     bool leveledUp = false;
-    while (xp >= level * 100) {
-      xp -= level * 100;
+    while (xp >= level * 50) {
+      xp -= level * 50;
       level++;
       leveledUp = true;
     }
@@ -230,7 +230,7 @@ class StorageService {
         key: 'feed',
         cooldownHours: 2,
         statDeltas: {'hunger': 25},
-        xpGain: 3,
+        xpGain: 6,
         coinGain: 1,
       );
 
@@ -238,7 +238,7 @@ class StorageService {
         key: 'play',
         cooldownHours: 1,
         statDeltas: {'happiness': 20, 'energy': -10, 'hunger': -5},
-        xpGain: 5,
+        xpGain: 10,
         coinGain: 2,
       );
 
@@ -246,7 +246,7 @@ class StorageService {
         key: 'sleep',
         cooldownHours: 4,
         statDeltas: {'energy': 35, 'happiness': 5},
-        xpGain: 4,
+        xpGain: 8,
         coinGain: 1,
       );
 
@@ -254,7 +254,7 @@ class StorageService {
         key: 'clean',
         cooldownHours: 3,
         statDeltas: {'happiness': 10, 'energy': 5},
-        xpGain: 3,
+        xpGain: 6,
         coinGain: 1,
       );
 
@@ -262,7 +262,7 @@ class StorageService {
         key: 'special_snack',
         cooldownHours: 12,
         statDeltas: {'hunger': 50, 'happiness': 20},
-        xpGain: 10,
+        xpGain: 20,
         coinGain: 3,
       );
 
@@ -270,7 +270,7 @@ class StorageService {
         key: 'spa',
         cooldownHours: 24,
         statDeltas: {'happiness': 50, 'energy': 30, 'hunger': 10},
-        xpGain: 15,
+        xpGain: 30,
         coinGain: 5,
       );
 
@@ -322,7 +322,7 @@ class StorageService {
     }
 
     await prefs.setString(_lastDateKey, today);
-    xp += 20;
+    xp += 30;
 
     final minutesSaved = (goalMinutes - usageMinutes).clamp(0, goalMinutes);
     final minuteBonus = minutesSaved ~/ 5;
@@ -336,8 +336,8 @@ class StorageService {
     totalDays++;
 
     bool leveledUp = false;
-    while (xp >= level * 100) {
-      xp -= level * 100;
+    while (xp >= level * 50) {
+      xp -= level * 50;
       level++;
       leveledUp = true;
     }
@@ -518,6 +518,29 @@ class StorageService {
       case 'peach':    return const Color(0xFFFFB080);
       default:         return null;
     }
+  }
+
+  static ({String emoji, String name, List<Color> gradient}) levelBadge(int level) {
+    if (level >= 20) return (
+      emoji: '💎', name: '전설',
+      gradient: const [Color(0xFF80DEEA), Color(0xFF0097A7)],
+    );
+    if (level >= 15) return (
+      emoji: '👑', name: '왕관',
+      gradient: const [Color(0xFFCE93D8), Color(0xFF8E24AA)],
+    );
+    if (level >= 10) return (
+      emoji: '🌟', name: '영웅',
+      gradient: const [Color(0xFFFFD54F), Color(0xFFFF8F00)],
+    );
+    if (level >= 5) return (
+      emoji: '⭐', name: '모험가',
+      gradient: const [Color(0xFF90CAF9), Color(0xFF1E88E5)],
+    );
+    return (
+      emoji: '🌱', name: '새싹',
+      gradient: const [Color(0xFFA5D6A7), Color(0xFF43A047)],
+    );
   }
 
   static List<Color> themeColors(String id) {

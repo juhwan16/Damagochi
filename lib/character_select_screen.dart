@@ -4,6 +4,24 @@ import 'storage_service.dart';
 import 'main_screen.dart';
 import 'game_background.dart';
 
+Widget _levelBadgeSmall(int level) {
+  final badge = StorageService.levelBadge(level);
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(colors: badge.gradient),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(mainAxisSize: MainAxisSize.min, children: [
+      Text(badge.emoji, style: const TextStyle(fontSize: 11)),
+      const SizedBox(width: 3),
+      Text(badge.name,
+          style: const TextStyle(
+              fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+    ]),
+  );
+}
+
 class CharacterSelectScreen extends StatefulWidget {
   const CharacterSelectScreen({super.key});
 
@@ -383,10 +401,8 @@ class _FilledSlot extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
                     ),
-                    const SizedBox(width: 8),
-                    Text(charType['name']!,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.black45)),
+                    const SizedBox(width: 6),
+                    _levelBadgeSmall(level),
                   ]),
                 ]),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'storage_service.dart';
 
 class LevelUpDialog extends StatefulWidget {
   final int newLevel;
@@ -31,31 +32,19 @@ class _LevelUpDialogState extends State<LevelUpDialog>
   }
 
   String _tierName(int level) {
-    if (level < 3) return '🐣 새싹';
-    if (level < 6) return '🌱 초보자';
-    if (level < 10) return '🌿 성장중';
-    if (level < 15) return '🌸 능숙자';
-    if (level < 20) return '🌟 전문가';
-    return '👑 마스터';
+    if (level < 5) return '새싹';
+    if (level < 10) return '모험가';
+    if (level < 15) return '영웅';
+    if (level < 20) return '왕관';
+    return '전설';
   }
 
   String? _unlockMessage(int level) {
     switch (level) {
-      case 2:  return '🧐 단안경 해금!';
-      case 3:  return '👓 안경 해금!';
-      case 4:  return '🪢 나비넥타이 해금!';
-      case 5:  return '⭐ 별모자 해금!\n🍰 특별 간식 케어 해금!';
-      case 6:  return '🌸 꽃장식 해금!';
-      case 7:  return '🎅 산타모자 해금!';
-      case 8:  return '☠️ 해적모자 해금!';
-      case 9:  return '🎧 헤드폰 해금!';
-      case 10: return '👑 왕관 해금!\n🧖 스파 케어 해금!';
-      case 11: return '🧙 마녀모자 해금!';
-      case 12: return '🧣 목도리 해금!';
-      case 13: return '🎉 파티모자 해금!';
-      case 14: return '😈 악마뿔 해금!';
-      case 15: return '😇 천사링 해금!';
-      case 20: return '🌟 별왕관 해금!';
+      case 5:  return '⭐ 모험가 휘장 획득!\n🍰 특별 간식 케어 해금!';
+      case 10: return '🌟 영웅 휘장 획득!\n🧖 스파 케어 해금!';
+      case 15: return '👑 왕관 휘장 획득!';
+      case 20: return '💎 전설 휘장 획득!';
       default: return null;
     }
   }
@@ -92,24 +81,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
             const SizedBox(height: 20),
             ScaleTransition(
               scale: _scale,
-              child: Container(
-                width: 110,
-                height: 110,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white54, width: 3),
-                ),
-                child: Center(
-                  child: Text(
-                    '${widget.newLevel}',
-                    style: const TextStyle(
-                        fontSize: 52,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ),
-              ),
+              child: _BadgeCircle(level: widget.newLevel),
             ),
             const SizedBox(height: 14),
             Text(_tierName(widget.newLevel),
@@ -179,4 +151,40 @@ void showLevelUpDialog(BuildContext context, int newLevel) {
     barrierDismissible: true,
     builder: (_) => LevelUpDialog(newLevel: newLevel),
   );
+}
+
+class _BadgeCircle extends StatelessWidget {
+  final int level;
+  const _BadgeCircle({required this.level});
+
+  @override
+  Widget build(BuildContext context) {
+    final badge = StorageService.levelBadge(level);
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: badge.gradient,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 4),
+        boxShadow: [
+          BoxShadow(
+            color: badge.gradient.last.withValues(alpha: 0.5),
+            blurRadius: 20,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(badge.emoji, style: const TextStyle(fontSize: 36)),
+        Text('Lv.$level',
+            style: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+      ]),
+    );
+  }
 }

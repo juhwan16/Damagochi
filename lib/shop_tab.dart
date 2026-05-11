@@ -91,7 +91,7 @@ final _colors = [
 // ─── ShopTab ────────────────────────────────────────────────────
 
 class ShopTab extends StatefulWidget {
-  final VoidCallback? onCustomizationChanged;
+  final Future<void> Function()? onCustomizationChanged;
   const ShopTab({super.key, this.onCustomizationChanged});
 
   @override
@@ -145,7 +145,7 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     final ok = await StorageService.buyItem(item.cost, item.effects);
     if (ok) {
       await _load();
-      widget.onCustomizationChanged?.call();
+      await widget.onCustomizationChanged?.call();
       _snack('${item.emoji} ${item.name} 구매 완료!');
     }
   }
@@ -153,11 +153,19 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
   Future<void> _buyCustom(String type, String id, int cost) async {
     if (cost == 0) return;
     final ok = await StorageService.unlockCustomItem(type, id, cost);
-    if (ok) {
-      await _load();
-      _snack('구매 완료! 이제 장착할 수 있어요 ✨');
-    } else {
+    if (!ok) {
       _snack('코인이 부족해요! 🪙', error: true);
+      return;
+    }
+    // Auto-equip after purchase
+    if (type == 'accessory') {
+      await _equipAccessory(id);
+    } else if (type == 'theme') {
+      await _equipTheme(id);
+    } else if (type == 'color') {
+      await _equipColor(id);
+    } else {
+      await _load();
     }
   }
 
@@ -165,21 +173,21 @@ class _ShopTabState extends State<ShopTab> with SingleTickerProviderStateMixin {
     final equipped = _custom['accessory'] == id ? 'none' : id;
     await StorageService.equipAccessory(equipped);
     await _load();
-    widget.onCustomizationChanged?.call();
+    await widget.onCustomizationChanged?.call();
     _snack(equipped == 'none' ? '악세서리를 해제했어요' : '악세서리를 장착했어요! 💕');
   }
 
   Future<void> _equipTheme(String id) async {
     await StorageService.equipTheme(id);
     await _load();
-    widget.onCustomizationChanged?.call();
+    await widget.onCustomizationChanged?.call();
     _snack('배경 테마가 바뀌었어요! 🎨');
   }
 
   Future<void> _equipColor(String id) async {
     await StorageService.equipColor(id);
     await _load();
-    widget.onCustomizationChanged?.call();
+    await widget.onCustomizationChanged?.call();
     _snack('캐릭터 색상이 바뀌었어요! 🌈');
   }
 

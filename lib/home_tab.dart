@@ -7,6 +7,7 @@ import 'usage_service.dart';
 import 'storage_service.dart';
 import 'settings_screen.dart';
 import 'level_up_dialog.dart';
+import 'mini_game_screen.dart';
 
 class HomeTab extends StatefulWidget {
   final int customVersion;
@@ -193,6 +194,8 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
         ],
         _buildStatsCard(pet),
         const SizedBox(height: 12),
+        _buildMiniGameCard(),
+        const SizedBox(height: 12),
         _buildUsageCard(pet),
         if (!_hasPermission) ...[
           const SizedBox(height: 12),
@@ -292,6 +295,83 @@ class _HomeTabState extends State<HomeTab> with TickerProviderStateMixin {
             ),
           ]),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMiniGameCard() {
+    return GestureDetector(
+      onTap: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MiniGameScreen(
+              petPrefix: _petPrefix,
+              characterColor: _characterColor,
+              accessoryAsset: _accessoryAsset,
+            ),
+          ),
+        );
+        _refresh();
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFFF3E0), Color(0xFFFFE0B2)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xFFFFCC80), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.withValues(alpha: 0.18),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFFB6D9), Color(0xFFD4AAFF)],
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: const Center(
+              child: Text('✏️', style: TextStyle(fontSize: 26)),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('한붓그리기 미니게임',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF5A3210))),
+              const SizedBox(height: 3),
+              const Text('3가지 퍼즐 · 클리어 시 XP & 코인 획득',
+                  style: TextStyle(fontSize: 12, color: Colors.black45)),
+            ]),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFFD4914A).withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text('시작 →',
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFD4914A))),
+          ),
+        ]),
       ),
     );
   }

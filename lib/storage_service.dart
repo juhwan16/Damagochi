@@ -354,6 +354,25 @@ class StorageService {
     );
   }
 
+  // ─── Mini-game reward ────────────────────────────────────────
+
+  static Future<({bool leveledUp, int newLevel})> addMiniGameReward(int xp, int coins) async {
+    final prefs = await SharedPreferences.getInstance();
+    int currentXp = (prefs.getInt(_xpKey) ?? 0) + xp;
+    int currentCoins = (prefs.getInt(_coinsKey) ?? 0) + coins;
+    int level = prefs.getInt(_levelKey) ?? 1;
+    bool leveledUp = false;
+    while (currentXp >= level * 50) {
+      currentXp -= level * 50;
+      level++;
+      leveledUp = true;
+    }
+    await prefs.setInt(_xpKey, currentXp);
+    await prefs.setInt(_coinsKey, currentCoins);
+    await prefs.setInt(_levelKey, level);
+    return (leveledUp: leveledUp, newLevel: level);
+  }
+
   // ─── Customization ───────────────────────────────────────────
 
   static Future<Map<String, dynamic>> loadCustomization() async {
